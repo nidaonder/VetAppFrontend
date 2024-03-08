@@ -10,7 +10,10 @@ function App() {
     <Navbar />
       <Routes>
         <Route path="/customer" element={<Customer />} />
+        {/* <Route path="/doctor" element={<Doctor />} /> */}
         <Route path="/animal" element={<Animal />} />
+        {/* <Route path="/appointment" element={<Appointment />} /> */}
+        {/* <Route path="/vaccine" element={<Vaccine />} /> */}
       </Routes>
     </>
   );
