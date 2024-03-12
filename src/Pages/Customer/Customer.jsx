@@ -1,45 +1,195 @@
 import { useState, useEffect } from "react";
+import {
+  getCustomers,
+  deleteCustomer,
+  createCustomer,
+  updateCustomerFunc,
+} from "../../API/customer";
+import DeleteIcon from "@mui/icons-material/Delete";
+import UpdateIcon from "@mui/icons-material/Update";
 import "./Customer.css";
 
 function Customer() {
   const [customer, setCustomer] = useState([]);
   const [reload, setReload] = useState(true);
+  const [newCustomer, setNewCustomer] = useState({
+    name: "",
+    phone: "",
+    mail: "",
+    address: "",
+    city: "",
+  });
+  const [updateCustomer, setUpdateCustomer] = useState({
+    name: "",
+    phone: "",
+    mail: "",
+    address: "",
+    city: "",
+  });
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/v1/customers")
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        setCustomer(data);
-      });
-      setReload(false);
+    getCustomers().then((data) => {
+      setCustomer(data);
+    });
+    setReload(false);
   }, [reload]);
 
-  const handleDelete = (event) => {
-    const id = event.target.id;
-    fetch(`http://localhost:8080/api/v1/customers/${id}`, {
-      method: "DELETE",
-    })
-    .then(() => {
+  const handleDelete = (id) => {
+    deleteCustomer(id).then(() => {
       setReload(true);
-    })
-    .catch((error) => {
-      console.error("Error:", error);
+    });
+  };
+
+  const handleUpdate = () => {
+    const{ id, ...customer } = updateCustomer;
+    updateCustomerFunc(id, customer).then(() => {
+      setReload(true);
+    });
+    setUpdateCustomer({
+      name: "",
+      phone: "",
+      mail: "",
+      address: "",
+      city: "",
+    });
+  };
+
+  const handleNewCustomer = (event) => {
+    setNewCustomer({
+      ...newCustomer,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  const handleCreate = () => {
+    createCustomer(newCustomer).then(() => {
+      setReload(true);
+    });
+    setNewCustomer({
+      name: "",
+      phone: "",
+      mail: "",
+      address: "",
+      city: "",
+    });
+  };
+
+  const handleUpdateBtn = (cus) => {
+    setUpdateCustomer({
+      name: cus.name,
+      phone: cus.phone,
+      mail: cus.mail,
+      address: cus.address,
+      city: cus.city,
+      id: cus.id,
+    });
+  };
+
+  const handleUpdateChange = (event) => {
+    setUpdateCustomer({
+      ...updateCustomer,
+      [event.target.name]: event.target.value,
     });
   };
 
   return (
     <>
-      <h1>Customer</h1>
+      <h1>Müşteri</h1>
+      <div className="customer-newcustomer">
+        <h2>Yeni Müşteri</h2>
+        <input
+          type="text"
+          placeholder="Name"
+          name="name"
+          value={newCustomer.name}
+          onChange={handleNewCustomer}
+        />
+        <input
+          type="text"
+          placeholder="Phone"
+          name="phone"
+          value={newCustomer.phone}
+          onChange={handleNewCustomer}
+        />
+        <input
+          type="text"
+          placeholder="E-Mail"
+          name="mail"
+          value={newCustomer.mail}
+          onChange={handleNewCustomer}
+        />
+        <input
+          type="text"
+          placeholder="Address"
+          name="address"
+          value={newCustomer.address}
+          onChange={handleNewCustomer}
+        />
+        <input
+          type="text"
+          placeholder="City"
+          name="city"
+          value={newCustomer.city}
+          onChange={handleNewCustomer}
+        />
+        <button onClick={handleCreate}>Create</button>
+      </div>
+      <div className="customer-updatecustomer">
+        <h2>Müşteri Güncelle</h2>
+        <input
+          type="text"
+          placeholder="Name"
+          name="name"
+          value={updateCustomer.name}
+          onChange={handleUpdateChange}
+        />
+        <input
+          type="text"
+          placeholder="Phone"
+          name="phone"
+          value={updateCustomer.phone}
+          onChange={handleUpdateChange}
+        />
+        <input
+          type="text"
+          placeholder="E-Mail"
+          name="mail"
+          value={updateCustomer.mail}
+          onChange={handleUpdateChange}
+        />
+        <input
+          type="text"
+          placeholder="Address"
+          name="address"
+          value={updateCustomer.address}
+          onChange={handleUpdateChange}
+        />
+        <input
+          type="text"
+          placeholder="City"
+          name="city"
+          value={updateCustomer.city}
+          onChange={handleUpdateChange}
+        />
+        <button onClick={handleUpdate}>Update</button>
+      </div>
       <div className="customer-list">
+        <h2>Müşteri Listesi</h2>
         {customer.map((customer) => (
-          <div 
-          id={customer.id}
-          onClick={(e) => handleDelete(e)} 
-          key={customer.id}>{customer.name}
+          <div key={customer.id}>
+            <h3>
+              {customer.name}
+              <span onClick={() => handleDelete(customer.id)}>
+                <DeleteIcon />
+              </span>
+              <span onClick={() => handleUpdateBtn(customer)}>
+                <UpdateIcon />
+              </span>
+            </h3>
+            {customer.mail}
           </div>
         ))}
-        </div>
+      </div>
     </>
   );
 }
