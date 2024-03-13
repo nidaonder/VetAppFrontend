@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
+import DeleteIcon from "@mui/icons-material/Delete";
+import UpdateIcon from "@mui/icons-material/Update";
 import {
   getCustomers,
   deleteCustomer,
   createCustomer,
   updateCustomerFunc,
 } from "../../API/customer";
-import DeleteIcon from "@mui/icons-material/Delete";
-import UpdateIcon from "@mui/icons-material/Update";
 import "./Customer.css";
 
 function Customer() {
@@ -99,14 +99,14 @@ function Customer() {
         <h2>Yeni Müşteri</h2>
         <input
           type="text"
-          placeholder="Name"
+          placeholder="Adı"
           name="name"
           value={newCustomer.name}
           onChange={handleNewCustomer}
         />
         <input
           type="text"
-          placeholder="Phone"
+          placeholder="Telefon"
           name="phone"
           value={newCustomer.phone}
           onChange={handleNewCustomer}
@@ -120,14 +120,14 @@ function Customer() {
         />
         <input
           type="text"
-          placeholder="Address"
+          placeholder="Adres"
           name="address"
           value={newCustomer.address}
           onChange={handleNewCustomer}
         />
         <input
           type="text"
-          placeholder="City"
+          placeholder="Şehir"
           name="city"
           value={newCustomer.city}
           onChange={handleNewCustomer}
@@ -138,14 +138,14 @@ function Customer() {
         <h2>Müşteri Güncelle</h2>
         <input
           type="text"
-          placeholder="Name"
+          placeholder="Adı"
           name="name"
           value={updateCustomer.name}
           onChange={handleUpdateChange}
         />
         <input
           type="text"
-          placeholder="Phone"
+          placeholder="Telefon"
           name="phone"
           value={updateCustomer.phone}
           onChange={handleUpdateChange}
@@ -159,14 +159,14 @@ function Customer() {
         />
         <input
           type="text"
-          placeholder="Address"
+          placeholder="Adress"
           name="address"
           value={updateCustomer.address}
           onChange={handleUpdateChange}
         />
         <input
           type="text"
-          placeholder="City"
+          placeholder="Şehir"
           name="city"
           value={updateCustomer.city}
           onChange={handleUpdateChange}
