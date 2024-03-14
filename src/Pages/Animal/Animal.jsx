@@ -29,7 +29,6 @@ export default function Animal() {
       ...newAnimal,
       [event.target.name]: event.target.value,
     });
-    console.log(newAnimal);
   };
 
   const handleCreate = () => {
