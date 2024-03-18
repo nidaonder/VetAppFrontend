@@ -7,13 +7,13 @@ import {
   createAnimal,
   updateAnimalFunc,
 } from "../../API/animal";
+import { getCustomers } from "../../API/customer";
 import "./Animal.css";
 
 export default function Animal() {
   const [animal, setAnimal] = useState([]);
   const [reload, setReload] = useState(true);
-
-  // new animal
+  const [customers, setCustomers] = useState([]);
   const [newAnimal, setNewAnimal] = useState({
     name: "",
     species: "",
@@ -21,14 +21,23 @@ export default function Animal() {
     gender: "",
     colour: "",
     dateOfBirth: "",
-    customer: "",
+    // customer: "",
   });
 
   const handleNewAnimal = (event) => {
-    setNewAnimal({
-      ...newAnimal,
-      [event.target.name]: event.target.value,
-    });
+    if (event.target.name === "customer") {
+      return setNewAnimal({
+        ...newAnimal,
+        customer: {
+          id: event.target.value,
+        },
+      });
+    } else {
+      setNewAnimal({
+        ...newAnimal,
+        [event.target.name]: event.target.value,
+      });
+    }
   };
 
   const handleCreate = () => {
@@ -42,11 +51,10 @@ export default function Animal() {
       gender: "",
       colour: "",
       dateOfBirth: "",
-      customer: "",
+      // customer: "",
     });
   };
 
-  // update animal
   const [updateAnimal, setUpdateAnimal] = useState({
     name: "",
     species: "",
@@ -59,13 +67,14 @@ export default function Animal() {
 
   const handleUpdateBtn = (animal) => {
     setUpdateAnimal({
+      id: animal.id,
       name: animal.name,
       species: animal.species,
       breed: animal.breed,
       gender: animal.gender,
       colour: animal.colour,
       dateOfBirth: animal.dateOfBirth,
-      customer: animal.customer,
+      customer: animal.customer? animal.customer.id : "" , // burayı degıstık
     });
   };
 
@@ -76,8 +85,14 @@ export default function Animal() {
     });
   };
 
+
+
   const handleUpdate = () => {
-    const { id, ...animal } = updateAnimal;
+    const updatedAnimal = {
+      ...updateAnimal,
+      customer: updateAnimal.customer ? { id: updateAnimal.customer } : null,
+    };
+    const { id, ...animal } = updatedAnimal;
     updateAnimalFunc(id, animal).then(() => {
       setReload(true);
     });
@@ -92,7 +107,27 @@ export default function Animal() {
     });
   };
 
-  // delete animal
+
+
+
+  // const handleUpdate = () => {
+  //   const { id, ...animal } = updateAnimal;
+  //   updateAnimalFunc(id, animal).then(() => {
+  //     setReload(true);
+  //   });
+  //   setUpdateAnimal({
+  //     name: "",
+  //     species: "",
+  //     breed: "",
+  //     gender: "",
+  //     colour: "",
+  //     dateOfBirth: "",
+  //     // customer: "",
+  //   });
+  // };
+
+
+
   const handleDelete = (id) => {
     deleteAnimal(id).then(() => {
       setReload(true);
@@ -102,6 +137,9 @@ export default function Animal() {
   useEffect(() => {
     getAnimals().then((data) => {
       setAnimal(data);
+    });
+    getCustomers().then((data) => {
+      setCustomers(data);
     });
     setReload(false);
   }, [reload]);
@@ -131,13 +169,19 @@ export default function Animal() {
           value={newAnimal.breed}
           onChange={handleNewAnimal}
         />
-        <input
-          type="text"
-          placeholder="Adres"
+
+        <select
           name="gender"
           value={newAnimal.gender}
           onChange={handleNewAnimal}
-        />
+        >
+          <option value="" disabled>
+            Cinsiyet Seçiniz
+          </option>
+          <option value="MALE">MALE</option>
+          <option value="FEMALE">FEMALE</option>
+        </select>
+
         <input
           type="text"
           placeholder="Renk"
@@ -152,13 +196,21 @@ export default function Animal() {
           value={newAnimal.dateOfBirth}
           onChange={handleNewAnimal}
         />
-        <input
-          type="text"
-          placeholder="Aile Üyesi"
+        <select
           name="customer"
-          value={newAnimal.customer}
+          value={newAnimal?.customer?.id || ""}
           onChange={handleNewAnimal}
-        />
+        >
+          <option value="" disabled>
+            Müşteri Seçiniz
+          </option>
+          {customers.map((customer) => (
+            <option key={customer.id} value={customer.id}>
+              {customer.name}
+            </option>
+          ))}
+        </select>
+
         <button onClick={handleCreate}>Create</button>
       </div>
       <div className="animal-updateanimal">
@@ -184,13 +236,17 @@ export default function Animal() {
           value={updateAnimal.breed}
           onChange={handleUpdateChange}
         />
-        <input
-          type="text"
-          placeholder="Cinsiyet"
+        <select
           name="gender"
           value={updateAnimal.gender}
           onChange={handleUpdateChange}
-        />
+        >
+          <option value="" disabled>
+            Cinsiyet Seçiniz
+          </option>
+          <option value="MALE">MALE</option>
+          <option value="FEMALE">FEMALE</option>
+        </select>
         <input
           type="text"
           placeholder="Renk"
@@ -205,14 +261,21 @@ export default function Animal() {
           value={updateAnimal.dateOfBirth}
           onChange={handleUpdateChange}
         />
-        <input
-          type="text"
-          placeholder="Aile Üyesi"
-          name="customer"
-          value={updateAnimal.customer}
-          onChange={handleUpdateChange}
-        />
 
+        <select
+          name="customer"
+          value={updateAnimal.customer || ""} // burayı degıstık
+          onChange={handleUpdateChange}
+        >
+          <option value="" disabled>
+            Müşteri Seçiniz
+          </option>
+          {customers.map((customer) => (
+            <option key={customer.id} value={customer.id}>
+              {customer.name}
+            </option>
+          ))}
+        </select>
         <button onClick={handleUpdate}>Update</button>
       </div>
       <div className="animal-list">
