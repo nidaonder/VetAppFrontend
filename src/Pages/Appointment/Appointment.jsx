@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import UpdateIcon from "@mui/icons-material/Update";
+import { getAnimals } from "../../API/animal";
+import { getDoctors } from "../../API/doctor";
 import {
   getAppointments,
   deleteAppointment,
@@ -12,6 +14,8 @@ import "./Appointment.css";
 function Appointment() {
   const [appointment, setAppointment] = useState([]);
   const [reload, setReload] = useState(true);
+  const [animals, setAnimals] = useState([]);
+  const [doctors, setDoctors] = useState([]);
 
   // new appointment
   const [newAppointment, setNewAppointment] = useState({
@@ -21,26 +25,69 @@ function Appointment() {
     report: "",
   });
 
+  // const handleNewAppointment = (event) => {
+  //   setNewAppointment({
+  //     ...newAppointment,
+  //     [event.target.name]: event.target.value,
+  //   });
+  // };
+
+
   const handleNewAppointment = (event) => {
-    setNewAppointment({
-      ...newAppointment,
-      [event.target.name]: event.target.value,
-    });
+    if (event.target.name === "animal" || event.target.name === "doctor") {
+      setNewAppointment({
+        ...newAppointment,
+        [event.target.name]: { id: event.target.value },
+      });
+    } else {
+      setNewAppointment({
+        ...newAppointment,
+        [event.target.name]: event.target.value,
+      });
+    }
   };
+  
+
+
+
 
   const handleCreate = () => {
-    createAppointment(newAppointment).then(() => {
-      setReload(true);
-    });
-    setNewAppointment({
-      appointmentDate: "",
-      animal: "",
-      doctor: "",
-      report: "",
-    });
-  };
+    const appointmentToCreate = {
+        ...newAppointment,
+        report: null,
+    };
 
-  // update appointment
+    createAppointment(appointmentToCreate).then(() => {
+        setReload(true);
+        setNewAppointment({
+            appointmentDate: "",
+            animal: "",
+            doctor: "",
+            report: "",
+        });
+    }).catch((error) => {
+        console.error("Creation failed:", error);
+    });
+};
+
+  
+
+
+
+
+
+  // const handleCreate = () => {
+  //   createAppointment(newAppointment).then(() => {
+  //     setReload(true);
+  //   });
+  //   setNewAppointment({
+  //     appointmentDate: "",
+  //     animal: "",
+  //     doctor: "",
+  //     report: "",
+  //   });
+  // };
+
   const [updateAppointment, setUpdateAppointment] = useState({
     appointmentDate: "",
     animal: "",
@@ -50,32 +97,61 @@ function Appointment() {
 
   const handleUpdateBtn = (appointment) => {
     setUpdateAppointment({
+      id: appointment.id,
       appointmentDate: appointment.appointmentDate,
-      animal: appointment.animal,
-      doctor: appointment.doctor,
-      report: appointment.report,
+      animal: appointment.animal.id,
+      doctor: appointment.doctor.id,
+      // report: appointment.report,
     });
   };
 
   const handleUpdateChange = (event) => {
     setUpdateAppointment({
       ...updateAppointment,
-      [event.target.name]: event.target.value, // burda
+      [event.target.name]: event.target.value,
     });
   };
 
+
+
   const handleUpdate = () => {
-    const { id, ...appointment } = updateAppointment;
-    updateAppointmentFunc(id, appointment).then(() => {
-      setReload(true);
-    });
-    setUpdateAppointment({
-      appointmentDate: "",
-      animal: "",
-      doctor: "",
-      report: "",
-    });
-  };
+    if (updateAppointment.id) {
+        const { id, animal, doctor, ...appointmentDetails } = updateAppointment;
+        const updatedAppointment = {
+            ...appointmentDetails,
+            animal: { id: animal },
+            doctor: { id: doctor },
+        };
+        updateAppointmentFunc(id, updatedAppointment).then(() => {
+            setReload(true);
+            setUpdateAppointment({
+                appointmentDate: "",
+                animal: "",
+                doctor: "",
+                report: "",
+            });
+        }).catch((error) => {
+            console.error("Update failed:", error);
+        });
+    } else {
+        console.error("Appointment ID is undefined.");
+    }
+};
+
+  
+
+  // const handleUpdate = () => {
+  //   const { id, ...appointment } = updateAppointment;
+  //   updateAppointmentFunc(id, appointment).then(() => {
+  //     setReload(true);
+  //   });
+  //   setUpdateAppointment({
+  //     appointmentDate: "",
+  //     animal: "",
+  //     doctor: "",
+  //     report: "",
+  //   });
+  // };
 
   // delete appointment
   const handleDelete = (id) => {
@@ -88,77 +164,96 @@ function Appointment() {
     getAppointments().then((data) => {
       setAppointment(data);
     });
+    getAnimals().then((data) => {
+      setAnimals(data);
+    });
+    getDoctors().then((data) => {
+      setDoctors(data);
+    });
     setReload(false);
   }, [reload]);
 
   return (
     <>
-     <div className="appointment-newappointment">
+      <div className="appointment-newappointment">
         <h2>Yeni Randevu</h2>
         <input
-          type="date"
+          type="datetime-local"
           placeholder="Tarih"
           name="appointmentDate"
           value={newAppointment.appointmentDate}
           onChange={handleNewAppointment}
         />
-        <input
-          type="text"
-          placeholder="Tür"
-          name="species"
-          value={newAppointment.animal}
+        <select
+          name="animal"
+          value={newAppointment?.animal?.id || ""}
           onChange={handleNewAppointment}
-        />
-        <input
-          type="text"
-          placeholder="Cins"
-          name="breed"
-          value={newAppointment.doctor}
+        >
+          <option value="" disabled>
+            Pet Seçiniz
+          </option>
+          {animals.map((animal) => (
+            <option key={animal.id} value={animal.id}>
+              {animal.name}
+            </option>
+          ))}
+        </select>
+        <select
+          name="doctor"
+          value={newAppointment?.doctor?.id || ""}
           onChange={handleNewAppointment}
-        />
-        <input
-          type="text"
-          placeholder="Adres"
-          name="gender"
-          value={newAppointment.report}
-          onChange={handleNewAppointment}
-        />
+        >
+          <option value="" disabled>
+            Doktor Seçiniz
+          </option>
+          {doctors.map((doctor) => (
+            <option key={doctor.id} value={doctor.id}>
+              {doctor.name}
+            </option>
+          ))}
+        </select>
         <button onClick={handleCreate}>Create</button>
       </div>
       <div className="appointment-updateappointment">
         <h2>Randevu Güncelle</h2>
         <input
-          type="date"
+          type="datetime-local"
           placeholder="Tarih"
           name="appointmentDate"
           value={updateAppointment.appointmentDate}
           onChange={handleUpdateChange}
         />
-        <input
-          type="text"
-          placeholder="Pet"
+        <select
           name="animal"
-          value={updateAppointment.animal}
+          value={updateAppointment.animal || ""}
           onChange={handleUpdateChange}
-        />
-        <input
-          type="text"
-          placeholder="Doktor"
+        >
+          <option value="" disabled>
+            Pet Seçiniz
+          </option>
+          {animals.map((animal) => (
+            <option key={animal.id} value={animal.id}>
+              {animal.name}
+            </option>
+          ))}
+        </select>
+        <select
           name="doctor"
-          value={updateAppointment.doctor}
+          value={updateAppointment.doctor || ""}
           onChange={handleUpdateChange}
-        />
-        <input
-          type="text"
-          placeholder="Rapor"
-          name="report"
-          value={updateAppointment.report}
-          onChange={handleUpdateChange}
-        />
-
+        >
+          <option value="" disabled>
+            Doktor Seçiniz
+          </option>
+          {doctors.map((doctor) => (
+            <option key={doctor.id} value={doctor.id}>
+              {doctor.name}
+            </option>
+          ))}
+        </select>
         <button onClick={handleUpdate}>Update</button>
       </div>
-    <div className="appointment-list">
+      <div className="appointment-list">
         <h2>Randevu Listesi</h2>
         {appointment.map((appointment) => (
           <div key={appointment.id}>
