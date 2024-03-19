@@ -112,8 +112,8 @@ function Appointment() {
         })
         .catch((error) => {
           console.error("Update failed:", error);
-          setErrorMessage("Güncelleme işlemi başarısız oldu!"); // Hata mesajını ayarla
-          setIsErrorModalOpen(true); // Modalı aç
+          setErrorMessage("Güncelleme işlemi başarısız oldu!");
+          setIsErrorModalOpen(true);
         });
     } else {
       console.error("Appointment ID is undefined.");
