@@ -1,3 +1,4 @@
+import Modal from "react-modal";
 import { useState, useEffect } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import UpdateIcon from "@mui/icons-material/Update";
@@ -16,22 +17,17 @@ function Appointment() {
   const [reload, setReload] = useState(true);
   const [animals, setAnimals] = useState([]);
   const [doctors, setDoctors] = useState([]);
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  // new appointment
+  Modal.setAppElement("#root");
+
   const [newAppointment, setNewAppointment] = useState({
     appointmentDate: "",
     animal: "",
     doctor: "",
     report: "",
   });
-
-  // const handleNewAppointment = (event) => {
-  //   setNewAppointment({
-  //     ...newAppointment,
-  //     [event.target.name]: event.target.value,
-  //   });
-  // };
-
 
   const handleNewAppointment = (event) => {
     if (event.target.name === "animal" || event.target.name === "doctor") {
@@ -46,47 +42,31 @@ function Appointment() {
       });
     }
   };
-  
-
-
-
 
   const handleCreate = () => {
     const appointmentToCreate = {
-        ...newAppointment,
-        report: null,
+      ...newAppointment,
+      report: null,
     };
 
-    createAppointment(appointmentToCreate).then(() => {
+    createAppointment(appointmentToCreate)
+      .then(() => {
         setReload(true);
         setNewAppointment({
-            appointmentDate: "",
-            animal: "",
-            doctor: "",
-            report: "",
+          appointmentDate: "",
+          animal: "",
+          doctor: "",
+          report: "",
         });
-    }).catch((error) => {
+      })
+      .catch((error) => {
         console.error("Creation failed:", error);
-    });
-};
-
-  
-
-
-
-
-
-  // const handleCreate = () => {
-  //   createAppointment(newAppointment).then(() => {
-  //     setReload(true);
-  //   });
-  //   setNewAppointment({
-  //     appointmentDate: "",
-  //     animal: "",
-  //     doctor: "",
-  //     report: "",
-  //   });
-  // };
+        setErrorMessage(
+          "Doktor bugün çalışmıyor! / Bu saatteki randevusu dolu!"
+        );
+        setIsErrorModalOpen(true);
+      });
+  };
 
   const [updateAppointment, setUpdateAppointment] = useState({
     appointmentDate: "",
@@ -112,48 +92,34 @@ function Appointment() {
     });
   };
 
-
-
   const handleUpdate = () => {
     if (updateAppointment.id) {
-        const { id, animal, doctor, ...appointmentDetails } = updateAppointment;
-        const updatedAppointment = {
-            ...appointmentDetails,
-            animal: { id: animal },
-            doctor: { id: doctor },
-        };
-        updateAppointmentFunc(id, updatedAppointment).then(() => {
-            setReload(true);
-            setUpdateAppointment({
-                appointmentDate: "",
-                animal: "",
-                doctor: "",
-                report: "",
-            });
-        }).catch((error) => {
-            console.error("Update failed:", error);
+      const { id, animal, doctor, ...appointmentDetails } = updateAppointment;
+      const updatedAppointment = {
+        ...appointmentDetails,
+        animal: { id: animal },
+        doctor: { id: doctor },
+      };
+      updateAppointmentFunc(id, updatedAppointment)
+        .then(() => {
+          setReload(true);
+          setUpdateAppointment({
+            appointmentDate: "",
+            animal: "",
+            doctor: "",
+            report: "",
+          });
+        })
+        .catch((error) => {
+          console.error("Update failed:", error);
+          setErrorMessage("Güncelleme işlemi başarısız oldu!"); // Hata mesajını ayarla
+          setIsErrorModalOpen(true); // Modalı aç
         });
     } else {
-        console.error("Appointment ID is undefined.");
+      console.error("Appointment ID is undefined.");
     }
-};
+  };
 
-  
-
-  // const handleUpdate = () => {
-  //   const { id, ...appointment } = updateAppointment;
-  //   updateAppointmentFunc(id, appointment).then(() => {
-  //     setReload(true);
-  //   });
-  //   setUpdateAppointment({
-  //     appointmentDate: "",
-  //     animal: "",
-  //     doctor: "",
-  //     report: "",
-  //   });
-  // };
-
-  // delete appointment
   const handleDelete = (id) => {
     deleteAppointment(id).then(() => {
       setReload(true);
@@ -258,7 +224,7 @@ function Appointment() {
         {appointment.map((appointment) => (
           <div key={appointment.id}>
             <h3>
-              {appointment.appointmentDate} {appointment.id}
+              {appointment.appointmentDate} {appointment.doctor.name}
               <span onClick={() => handleDelete(appointment.id)}>
                 <DeleteIcon />
               </span>
@@ -266,10 +232,36 @@ function Appointment() {
                 <UpdateIcon />
               </span>
             </h3>
-            {appointment.appointmentDate}
+            {appointment.id} {appointment.animal.name}
           </div>
         ))}
       </div>
+
+      <Modal
+        isOpen={isErrorModalOpen}
+        onRequestClose={() => setIsErrorModalOpen(false)}
+        contentLabel="Error Modal"
+        style={{
+          content: {
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+            width: "400px",
+            height: "200px",
+            overflow: "auto",
+          },
+          overlay: {
+            backgroundColor: "rgba(0, 0, 0, 0.75)",
+          },
+        }}
+      >
+        <h2>Hata</h2>
+        <div>{errorMessage}</div>
+        <button onClick={() => setIsErrorModalOpen(false)}>Kapat</button>
+      </Modal>
     </>
   );
 }
