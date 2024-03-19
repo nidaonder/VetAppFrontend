@@ -8,12 +8,14 @@ import {
   updateVaccineFunc,
 } from "../../API/vaccine";
 import { getAnimals } from "../../API/animal";
+import { getReports } from "../../API/report";
 import "./Vaccine.css";
 
 function Vaccine() {
   const [vaccine, setVaccine] = useState([]);
   const [reload, setReload] = useState(true);
   const [animals, setAnimals] = useState([]);
+  const [reports, setReports] = useState([]);
   const [newVaccine, setNewVaccine] = useState({
     name: "",
     code: "",
@@ -43,6 +45,9 @@ function Vaccine() {
     });
     getAnimals().then((data) => {
       setAnimals(data);
+    });
+    getReports().then((data) => {
+      setReports(data);
     });
     setReload(false);
   }, [reload]);
@@ -91,12 +96,12 @@ function Vaccine() {
 
   const handleUpdateBtn = (vac) => {
     setUpdateVaccine({
-      name: vaccine.name,
-      code: vaccine.code,
-      protectionStartDate: vaccine.protectionStartDate,
-      protectionFinishDate: vaccine.protectionFinishDate,
-      animal: vaccine.animal,
-      report: vaccine.report,
+      name: vac.name,
+      code: vac.code,
+      protectionStartDate: vac.protectionStartDate,
+      protectionFinishDate: vac.protectionFinishDate,
+      animal: vac.animal,
+      report: vac.report,
     });
   };
 
@@ -155,6 +160,21 @@ function Vaccine() {
           ))}
         </select>
 
+        <select
+          name="report"
+          value={newVaccine?.report?.id || ""}
+          onChange={handleNewVaccine}
+        >
+          <option value="" disabled>
+            Rapor Seçiniz
+          </option>
+          {reports.map((report) => (
+            <option key={report.id} value={report.id}>
+              {report.id} {report.title}
+            </option>
+          ))}
+        </select>
+
         <button onClick={handleCreate}>Ekle</button>
       </div>
 
@@ -191,7 +211,7 @@ function Vaccine() {
 
         <select
           name="animal"
-          value={newVaccine?.animal?.id || ""}
+          value={updateVaccine?.animal?.id || ""}
           onChange={handleUpdateChange}
         >
           <option value="" disabled>
@@ -200,6 +220,21 @@ function Vaccine() {
           {animals.map((animal) => (
             <option key={animal.id} value={animal.id}>
               {animal.name}
+            </option>
+          ))}
+        </select>
+
+        <select
+          name="report"
+          value={updateVaccine?.report?.id || ""}
+          onChange={handleUpdateChange}
+        >
+          <option value="" disabled>
+            Rapor Seçiniz
+          </option>
+          {reports.map((report) => (
+            <option key={report.id} value={report.id}>
+              {report.id} {report.title}
             </option>
           ))}
         </select>
