@@ -39,9 +39,22 @@ function AvailableDatesModal({ isOpen, onClose, availableDates, doctorName }) {
       }}
     >
       <h2>{doctorName} - Müsait Günler</h2>
+      <div>
+        <input type="date" placeholder="Tarih" name="availableDate" />
+        <button>Ekle</button>
+      </div>
+      <div>
+        <input type="date" />
+        <button>Güncelle</button>
+      </div>
       <ul>
         {availableDates.map((date, index) => (
-          <li key={index}>{date.availableDate}</li>
+          <li key={index}>
+            {date.availableDate}
+            <span>
+              <UpdateIcon />
+            </span>
+          </li>
         ))}
       </ul>
       <button onClick={onClose}>Kapat</button>
