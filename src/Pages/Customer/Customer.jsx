@@ -26,6 +26,11 @@ function Customer() {
     address: "",
     city: "",
   });
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredCustomers = customer.filter((cus) =>
+    cus.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   useEffect(() => {
     getCustomers().then((data) => {
@@ -41,7 +46,7 @@ function Customer() {
   };
 
   const handleUpdate = () => {
-    const{ id, ...customer } = updateCustomer;
+    const { id, ...customer } = updateCustomer;
     updateCustomerFunc(id, customer).then(() => {
       setReload(true);
     });
@@ -95,6 +100,14 @@ function Customer() {
   return (
     <>
       <h1>Müşteri</h1>
+      <div className="customer-search">
+        <input
+          type="text"
+          placeholder="Müşteri ara"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
       <div className="customer-newcustomer">
         <h2>Yeni Müşteri</h2>
         <input
@@ -175,7 +188,7 @@ function Customer() {
       </div>
       <div className="customer-list">
         <h2>Müşteri Listesi</h2>
-        {customer.map((customer) => (
+        {filteredCustomers.map((customer) => (
           <div key={customer.id}>
             <h3>
               {customer.name}

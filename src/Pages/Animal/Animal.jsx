@@ -23,6 +23,18 @@ export default function Animal() {
     dateOfBirth: "",
     // customer: "",
   });
+  const [searchQueryAnimal, setSearchQueryAnimal] = useState("");
+  const [searchQueryCustomer, setSearchQueryCustomer] = useState("");
+
+  const filteredAnimals = animal.filter(
+    (anim) =>
+      anim.name.toLowerCase().includes(searchQueryAnimal.toLowerCase()) &&
+      (anim.customer
+        ? anim.customer.name
+            .toLowerCase()
+            .includes(searchQueryCustomer.toLowerCase())
+        : !searchQueryCustomer)
+  );
 
   const handleNewAnimal = (event) => {
     if (event.target.name === "customer") {
@@ -74,7 +86,7 @@ export default function Animal() {
       gender: animal.gender,
       colour: animal.colour,
       dateOfBirth: animal.dateOfBirth,
-      customer: animal.customer? animal.customer.id : "" , // burayı degıstık
+      customer: animal.customer ? animal.customer.id : "",
     });
   };
 
@@ -84,8 +96,6 @@ export default function Animal() {
       [event.target.name]: event.target.value,
     });
   };
-
-
 
   const handleUpdate = () => {
     const updatedAnimal = {
@@ -107,27 +117,6 @@ export default function Animal() {
     });
   };
 
-
-
-
-  // const handleUpdate = () => {
-  //   const { id, ...animal } = updateAnimal;
-  //   updateAnimalFunc(id, animal).then(() => {
-  //     setReload(true);
-  //   });
-  //   setUpdateAnimal({
-  //     name: "",
-  //     species: "",
-  //     breed: "",
-  //     gender: "",
-  //     colour: "",
-  //     dateOfBirth: "",
-  //     // customer: "",
-  //   });
-  // };
-
-
-
   const handleDelete = (id) => {
     deleteAnimal(id).then(() => {
       setReload(true);
@@ -146,6 +135,21 @@ export default function Animal() {
 
   return (
     <>
+      <div className="search-inputs">
+        <input
+          type="text"
+          placeholder="Pet adıyla ara"
+          value={searchQueryAnimal}
+          onChange={(e) => setSearchQueryAnimal(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Müşteri adıyla ara"
+          value={searchQueryCustomer}
+          onChange={(e) => setSearchQueryCustomer(e.target.value)}
+        />
+      </div>
+
       <div className="animal-newanimal">
         <h2>Yeni Pet</h2>
         <input
@@ -264,7 +268,7 @@ export default function Animal() {
 
         <select
           name="customer"
-          value={updateAnimal.customer || ""} // burayı degıstık
+          value={updateAnimal.customer || ""}
           onChange={handleUpdateChange}
         >
           <option value="" disabled>
@@ -278,12 +282,14 @@ export default function Animal() {
         </select>
         <button onClick={handleUpdate}>Update</button>
       </div>
+
       <div className="animal-list">
         <h2>Pet Listesi</h2>
-        {animal.map((animal) => (
+        {filteredAnimals.map((animal) => (
           <div key={animal.id}>
             <h3>
-              {animal.name} {animal.id}
+              {animal.name} -{" "}
+              {animal.customer ? animal.customer.name : "Sahipsiz"}
               <span onClick={() => handleDelete(animal.id)}>
                 <DeleteIcon />
               </span>
@@ -291,7 +297,7 @@ export default function Animal() {
                 <UpdateIcon />
               </span>
             </h3>
-            {animal.species}
+            {animal.species} - {animal.breed}
           </div>
         ))}
       </div>

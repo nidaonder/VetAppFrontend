@@ -19,6 +19,27 @@ function Appointment() {
   const [doctors, setDoctors] = useState([]);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [doctorFilter, setDoctorFilter] = useState("");
+  const [animalFilter, setAnimalFilter] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
+  const filteredAppointments = appointment.filter((appt) => {
+    const apptDate = new Date(appt.appointmentDate).getTime();
+    const start = new Date(startDate).getTime();
+    const end = new Date(endDate).getTime();
+
+    const matchesDoctorName = appt.doctor.name
+      .toLowerCase()
+      .includes(doctorFilter.toLowerCase());
+    const matchesAnimalName = appt.animal.name
+      .toLowerCase()
+      .includes(animalFilter.toLowerCase());
+    const isInDateRange =
+      (!startDate || apptDate >= start) && (!endDate || apptDate <= end);
+
+    return (matchesDoctorName && matchesAnimalName) && isInDateRange;
+  });
 
   Modal.setAppElement("#root");
 
@@ -141,6 +162,31 @@ function Appointment() {
 
   return (
     <>
+      <div className="filter-section">
+        <input
+          type="text"
+          placeholder="Doktor adı ile filtrele"
+          value={doctorFilter}
+          onChange={(e) => setDoctorFilter(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Animal adı ile filtrele"
+          value={animalFilter}
+          onChange={(e) => setAnimalFilter(e.target.value)}
+        />
+        <input
+          type="date"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+        />
+        <input
+          type="date"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+        />
+      </div>
+
       <div className="appointment-newappointment">
         <h2>Yeni Randevu</h2>
         <input
@@ -219,7 +265,26 @@ function Appointment() {
         </select>
         <button onClick={handleUpdate}>Update</button>
       </div>
+
       <div className="appointment-list">
+        <h2>Randevu Listesi</h2>
+        {filteredAppointments.map((appointment) => (
+          <div key={appointment.id}>
+            <h3>
+              {appointment.appointmentDate} {appointment.doctor.name}
+              <span onClick={() => handleDelete(appointment.id)}>
+                <DeleteIcon />
+              </span>
+              <span onClick={() => handleUpdateBtn(appointment)}>
+                <UpdateIcon />
+              </span>
+            </h3>
+            {appointment.id} {appointment.animal.name}
+          </div>
+        ))}
+      </div>
+
+      {/* <div className="appointment-list">
         <h2>Randevu Listesi</h2>
         {appointment.map((appointment) => (
           <div key={appointment.id}>
@@ -235,7 +300,7 @@ function Appointment() {
             {appointment.id} {appointment.animal.name}
           </div>
         ))}
-      </div>
+      </div> */}
 
       <Modal
         isOpen={isErrorModalOpen}
