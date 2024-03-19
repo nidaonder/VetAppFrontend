@@ -283,25 +283,7 @@ function Appointment() {
           </div>
         ))}
       </div>
-
-      {/* <div className="appointment-list">
-        <h2>Randevu Listesi</h2>
-        {appointment.map((appointment) => (
-          <div key={appointment.id}>
-            <h3>
-              {appointment.appointmentDate} {appointment.doctor.name}
-              <span onClick={() => handleDelete(appointment.id)}>
-                <DeleteIcon />
-              </span>
-              <span onClick={() => handleUpdateBtn(appointment)}>
-                <UpdateIcon />
-              </span>
-            </h3>
-            {appointment.id} {appointment.animal.name}
-          </div>
-        ))}
-      </div> */}
-
+      
       <Modal
         isOpen={isErrorModalOpen}
         onRequestClose={() => setIsErrorModalOpen(false)}

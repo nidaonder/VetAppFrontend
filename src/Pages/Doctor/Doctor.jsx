@@ -1,6 +1,14 @@
+import Modal from "react-modal";
 import { useState, useEffect } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import UpdateIcon from "@mui/icons-material/Update";
+import EventAvailableIcon from "@mui/icons-material/EventAvailable";
+import {
+  getAvailableDates,
+  deleteAvailableDate,
+  createAvailableDate,
+  updateAvailableDateFunc,
+} from "../../API/availableDate";
 import {
   getDoctors,
   deleteDoctor,
@@ -9,11 +17,67 @@ import {
 } from "../../API/doctor";
 import "./Doctor.css";
 
+function AvailableDatesModal({ isOpen, onClose, availableDates, doctorName }) {
+  return (
+    <Modal
+      isOpen={isOpen}
+      onRequestClose={onClose}
+      contentLabel={`${doctorName} - Müsait Günler`}
+      ariaHideApp={false}
+      style={{
+        content: {
+          top: "50%",
+          left: "50%",
+          right: "auto",
+          bottom: "auto",
+          marginRight: "-50%",
+          transform: "translate(-50%, -50%)",
+          width: "600px",
+          height: "400px",
+          overflow: "auto",
+        },
+      }}
+    >
+      <h2>{doctorName} - Müsait Günler</h2>
+      <ul>
+        {availableDates.map((date, index) => (
+          <li key={index}>{date.availableDate}</li>
+        ))}
+      </ul>
+      <button onClick={onClose}>Kapat</button>
+    </Modal>
+  );
+}
+
 function Doctor() {
   const [doctor, setDoctor] = useState([]);
   const [reload, setReload] = useState(true);
 
-  // new doctor
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentDoctorAvailableDates, setCurrentDoctorAvailableDates] =
+    useState([]);
+  const [currentDoctorName, setCurrentDoctorName] = useState("");
+
+  const handleShowAvailableDates = async (selectedDoctor) => {
+    try {
+      const allAvailableDates = await getAvailableDates();
+      const filteredDates = allAvailableDates.filter(
+        (date) => date.doctor.id === selectedDoctor.id
+      );
+
+      setCurrentDoctorAvailableDates(filteredDates);
+      setCurrentDoctorName(selectedDoctor.name);
+
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error("Müsait günler getirilirken bir hata oluştu:", error);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   const [newDoctor, setNewDoctor] = useState({
     name: "",
     phone: "",
@@ -42,14 +106,12 @@ function Doctor() {
     });
   };
 
-  // delete doctor
   const handleDelete = (id) => {
     deleteDoctor(id).then(() => {
       setReload(true);
     });
   };
 
-  // update doctor
   const [updateDoctor, setUpdateDoctor] = useState({
     name: "",
     phone: "",
@@ -77,7 +139,7 @@ function Doctor() {
   };
 
   const handleUpdate = () => {
-    const{ id, ...doctor } = updateDoctor;
+    const { id, ...doctor } = updateDoctor;
     updateDoctorFunc(id, doctor).then(() => {
       setReload(true);
     });
@@ -90,7 +152,6 @@ function Doctor() {
     });
   };
 
-
   useEffect(() => {
     getDoctors().then((data) => {
       setDoctor(data);
@@ -100,7 +161,7 @@ function Doctor() {
 
   return (
     <>
-    <div className="doctor-newdoctor">
+      <div className="doctor-newdoctor">
         <h2>Yeni Doktor</h2>
         <input
           type="text"
@@ -183,18 +244,27 @@ function Doctor() {
         {doctor.map((doctor) => (
           <div key={doctor.id}>
             <h3>
-              {doctor.name}
+              {doctor.id} {doctor.name}
               <span onClick={() => handleDelete(doctor.id)}>
                 <DeleteIcon />
               </span>
               <span onClick={() => handleUpdateBtn(doctor)}>
                 <UpdateIcon />
               </span>
+              <span onClick={() => handleShowAvailableDates(doctor)}>
+                <EventAvailableIcon />
+              </span>
             </h3>
             {doctor.phone}
           </div>
         ))}
       </div>
+      <AvailableDatesModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        availableDates={currentDoctorAvailableDates}
+        doctorName={currentDoctorName}
+      />
     </>
   );
 }
