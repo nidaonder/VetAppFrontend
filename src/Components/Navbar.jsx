@@ -13,7 +13,7 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import { Block } from "@mui/icons-material";
-import PetsIcon from '@mui/icons-material/Pets';
+import PetsIcon from "@mui/icons-material/Pets";
 
 const pages = [
   { name: "Customer", path: "/customer" },
@@ -22,7 +22,7 @@ const pages = [
   { name: "Appointment", path: "/appointment" },
   { name: "Vaccine", path: "/vaccine" },
 ];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const settings = ["Report Management"];
 
 function Navbar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -44,7 +44,7 @@ function Navbar() {
   };
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: '#5d3ebc' }}>
+    <AppBar position="static" sx={{ backgroundColor: "#5d3ebc" }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <PetsIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
@@ -134,7 +134,7 @@ function Navbar() {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
+            <Tooltip title="Report">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
               </IconButton>
@@ -157,7 +157,12 @@ function Navbar() {
             >
               {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+                  <Link
+                    to="/report"
+                    style={{ textDecoration: "none", color: "inherit" }}
+                  >
+                    <Typography textAlign="center">{setting}</Typography>
+                  </Link>
                 </MenuItem>
               ))}
             </Menu>

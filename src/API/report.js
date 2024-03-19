@@ -21,7 +21,7 @@ export const createReport = async (report) => {
     return data;
 };
 
-export const updateAnimalFunc = async (id, report) => {
+export const updateReportFunc = async (id, report) => {
     const { data } = await axios.put(
         `${import.meta.env.VITE_APP_BASE_URL}/api/v1/reports/${id}`,
         report
