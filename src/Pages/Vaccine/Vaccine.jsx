@@ -7,11 +7,13 @@ import {
   createVaccine,
   updateVaccineFunc,
 } from "../../API/vaccine";
+import { getAnimals } from "../../API/animal";
 import "./Vaccine.css";
 
 function Vaccine() {
   const [vaccine, setVaccine] = useState([]);
   const [reload, setReload] = useState(true);
+  const [animals, setAnimals] = useState([]);
   const [newVaccine, setNewVaccine] = useState({
     name: "",
     code: "",
@@ -27,7 +29,7 @@ function Vaccine() {
     protectionFinishDate: "",
     animal: vaccine.animal,
     report: vaccine.report,
-  })
+  });
 
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -38,6 +40,9 @@ function Vaccine() {
   useEffect(() => {
     getVaccines().then((data) => {
       setVaccine(data);
+    });
+    getAnimals().then((data) => {
+      setAnimals(data);
     });
     setReload(false);
   }, [reload]);
@@ -68,7 +73,7 @@ function Vaccine() {
       report: vaccine.report,
     });
   };
-  
+
   const handleUpdate = () => {
     const { id, ...vaccine } = updateVaccine;
     updateVaccineFunc(id, vaccine).then(() => {
@@ -104,7 +109,7 @@ function Vaccine() {
 
   return (
     <>
-    <div className="vaccine-newvaccine">
+      <div className="vaccine-newvaccine">
         <h2>Yeni Aşı</h2>
         <input
           type="text"
@@ -135,13 +140,74 @@ function Vaccine() {
           onChange={handleNewVaccine}
         />
 
+        <select
+          name="animal"
+          value={newVaccine?.animal?.id || ""}
+          onChange={handleNewVaccine}
+        >
+          <option value="" disabled>
+            Pet Seçiniz
+          </option>
+          {animals.map((animal) => (
+            <option key={animal.id} value={animal.id}>
+              {animal.name}
+            </option>
+          ))}
+        </select>
 
-        <select name="" id=""></select>
-
-
-        <button onClick={handleCreate}>Create</button>
+        <button onClick={handleCreate}>Ekle</button>
       </div>
-    <div className="vaccine-list">
+
+      <div className="vaccine-updatevaccine">
+        <h2>Aşı Güncelle</h2>
+        <input
+          type="text"
+          placeholder="Adı"
+          name="name"
+          value={updateVaccine.name}
+          onChange={handleUpdateChange}
+        />
+        <input
+          type="text"
+          placeholder="Kod"
+          name="code"
+          value={updateVaccine.code}
+          onChange={handleUpdateChange}
+        />
+        <input
+          type="date"
+          placeholder="Koruyuculuk Başlangıç"
+          name="protectionStartDate"
+          value={updateVaccine.protectionStartDate}
+          onChange={handleUpdateChange}
+        />
+        <input
+          type="date"
+          placeholder="Koruyuculuk Bitiş"
+          name="protectionFinishDate"
+          value={updateVaccine.protectionFinishDate}
+          onChange={handleUpdateChange}
+        />
+
+        <select
+          name="animal"
+          value={newVaccine?.animal?.id || ""}
+          onChange={handleUpdateChange}
+        >
+          <option value="" disabled>
+            Pet Seçiniz
+          </option>
+          {animals.map((animal) => (
+            <option key={animal.id} value={animal.id}>
+              {animal.name}
+            </option>
+          ))}
+        </select>
+
+        <button onClick={handleUpdate}>Güncelle</button>
+      </div>
+
+      <div className="vaccine-list">
         <h2>Aşı Listesi</h2>
         {filteredVaccines.map((vaccine) => (
           <div key={vaccine.id}>
@@ -159,7 +225,7 @@ function Vaccine() {
         ))}
       </div>
     </>
-  )
+  );
 }
 
 export default Vaccine;

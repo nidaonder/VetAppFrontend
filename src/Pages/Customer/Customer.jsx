@@ -145,7 +145,7 @@ function Customer() {
           value={newCustomer.city}
           onChange={handleNewCustomer}
         />
-        <button onClick={handleCreate}>Create</button>
+        <button onClick={handleCreate}>Ekle</button>
       </div>
       <div className="customer-updatecustomer">
         <h2>Müşteri Güncelle</h2>
@@ -184,7 +184,7 @@ function Customer() {
           value={updateCustomer.city}
           onChange={handleUpdateChange}
         />
-        <button onClick={handleUpdate}>Update</button>
+        <button onClick={handleUpdate}>Güncelle</button>
       </div>
       <div className="customer-list">
         <h2>Müşteri Listesi</h2>
