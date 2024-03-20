@@ -98,6 +98,12 @@ function Report() {
     }
   };
 
+  const preventNegative = (event) => {
+    if (event.key === '-') {
+      event.preventDefault();
+    }
+  };
+
   useEffect(() => {
     getReports().then((data) => {
       setReport(data);
@@ -121,7 +127,7 @@ function Report() {
         />
         <input
           type="text"
-          placeholder="Açıklama"
+          placeholder="Tanı"
           name="diagnosis"
           value={newReport.diagnosis}
           onChange={handleNewReport}
@@ -130,7 +136,9 @@ function Report() {
           type="number"
           placeholder="Tutar"
           name="price"
+          min={0}
           value={newReport.price}
+          onKeyDown={preventNegative}
           onChange={handleNewReport}
         />
         <select
@@ -149,6 +157,49 @@ function Report() {
         </select>
         <button onClick={handleCreate}>Ekle</button>
       </div>
+
+      <div className="report-updatereport">
+        <h2>Rapor Güncelle</h2>
+        <input
+          type="text"
+          placeholder="Başlık"
+          name="title"
+          value={updateReport.title}
+          onChange={handleUpdateChange}
+        />
+        <input
+          type="text"
+          placeholder="Tanı"
+          name="diagnosis"
+          value={updateReport.diagnosis}
+          onChange={handleUpdateChange}
+        />
+        <input
+          type="number"
+          placeholder="Tutar"
+          name="price"
+          min={0}
+          onKeyDown={preventNegative}
+          value={updateReport.price}
+          onChange={handleUpdateChange}
+        />
+        <select
+          name="appointment"
+          value={updateReport?.appointment?.id || ""}
+          onChange={handleUpdateChange}
+        >
+          <option value="" disabled>
+            Randevu Seçiniz
+          </option>
+          {appointments.map((appointment) => (
+            <option key={appointment.id} value={appointment.id}>
+              {appointment.appointmentDate} {appointment.doctor.name}
+            </option>
+          ))}
+        </select>
+        <button onClick={handleUpdate}>Güncelle</button>
+      </div>
+
       <div className="report-list">
         <h2>Rapor Listesi</h2>
         {report.map((report) => (
