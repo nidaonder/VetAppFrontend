@@ -99,7 +99,7 @@ function Customer() {
 
   return (
     <>
-      <h1>Müşteri</h1>
+      <h1>Müşteri Yönetimi</h1>
       <div className="customer-search">
         <input
           type="text"

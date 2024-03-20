@@ -17,7 +17,83 @@ import {
 } from "../../API/doctor";
 import "./Doctor.css";
 
-function AvailableDatesModal({ isOpen, onClose, availableDates, doctorName }) {
+function AvailableDatesModal({
+  isOpen,
+  onClose,
+  availableDates,
+  doctorName,
+  doctorId,
+}) {
+  const [availableDate, setAvailableDate] = useState([]);
+  const [modalReload, setModalReload] = useState(true);
+  const [newAvailableDate, setNewAvailableDate] = useState({
+    availableDate: "",
+    doctor: availableDate.doctor,
+  });
+  const [updateAvailable, setUpdateAvailable] = useState({
+    availableDate: "",
+    doctor: null,
+  });
+
+  const handleNewAvailableDate = (event) => {
+    setNewAvailableDate({
+      ...newAvailableDate,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  const handleUpdateBtn = (aDate) => {
+    setUpdateAvailable({
+      id: aDate.id,
+      availableDate: aDate.availableDate,
+      doctor: { id: doctorId }, 
+    });
+  };
+
+  const handleUpdateChange = (event) => {
+    setUpdateAvailable({
+      ...updateAvailable,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  const handleUpdate = () => {
+    const { id, ...availableDate } = updateAvailable;
+    updateAvailableDateFunc(id, availableDate).then(() => {
+      setModalReload(true);
+    });
+    setUpdateAvailable({
+      availableDate: "",
+      doctor: availableDate.doctor,
+    });
+  };
+
+  const handleCreate = () => {
+    const newDate = {
+      ...newAvailableDate,
+      doctor: { id: doctorId },
+    };
+
+    createAvailableDate(newDate)
+      .then(() => {
+        setModalReload(!modalReload);
+      })
+      .catch((error) => {
+        console.error("Müsait gün eklenirken hata oluştu", error);
+      });
+
+    setNewAvailableDate({
+      availableDate: "",
+      doctor: "",
+    });
+  };
+
+  const handleDelete = (id) => {
+    deleteAvailableDate(id).then(() => {
+      setModalReload(true);
+    });
+  };
+
   return (
     <Modal
       isOpen={isOpen}
@@ -39,20 +115,50 @@ function AvailableDatesModal({ isOpen, onClose, availableDates, doctorName }) {
       }}
     >
       <h2>{doctorName} - Müsait Günler</h2>
-      <div>
-        <input type="date" placeholder="Tarih" name="availableDate" />
-        <button>Ekle</button>
+      <div className="available-newavailable">
+        <h2>Yeni Müsait Gün</h2>
+        <input
+          type="date"
+          placeholder="Tarih"
+          name="availableDate"
+          value={newAvailableDate.availableDate}
+          onChange={handleNewAvailableDate}
+        />
+        <input
+          type="text"
+          name="doctorId"
+          value={doctorId}
+          onChange={handleNewAvailableDate}
+          readOnly
+        />
+        <button onClick={handleCreate}>Ekle</button>
       </div>
-      <div>
-        <input type="date" />
-        <button>Güncelle</button>
+      <div className="available-updateavailable">
+        <input
+          type="date"
+          placeholder="Tarih"
+          name="availableDate"
+          value={updateAvailable.availableDate || ""}
+          onChange={handleUpdateChange}
+        />
+        <input
+          type="text"
+          name="doctorId"
+          value={doctorId}
+          // onChange={handleUpdateChange}
+          readOnly
+        />
+        <button onClick={handleUpdate}>Güncelle</button>
       </div>
       <ul>
         {availableDates.map((date, index) => (
           <li key={index}>
             {date.availableDate}
-            <span>
+            <span onClick={() => handleUpdateBtn(date)}>
               <UpdateIcon />
+            </span>
+            <span onClick={() => handleDelete(date.id)}>
+              <DeleteIcon />
             </span>
           </li>
         ))}
@@ -70,6 +176,7 @@ function Doctor() {
   const [currentDoctorAvailableDates, setCurrentDoctorAvailableDates] =
     useState([]);
   const [currentDoctorName, setCurrentDoctorName] = useState("");
+  const [currentDoctorId, setCurrentDoctorId] = useState("");
 
   const handleShowAvailableDates = async (selectedDoctor) => {
     try {
@@ -80,6 +187,7 @@ function Doctor() {
 
       setCurrentDoctorAvailableDates(filteredDates);
       setCurrentDoctorName(selectedDoctor.name);
+      setCurrentDoctorId(selectedDoctor.id);
 
       setIsModalOpen(true);
     } catch (error) {
@@ -277,6 +385,7 @@ function Doctor() {
         onClose={handleCloseModal}
         availableDates={currentDoctorAvailableDates}
         doctorName={currentDoctorName}
+        doctorId={currentDoctorId}
       />
     </>
   );
