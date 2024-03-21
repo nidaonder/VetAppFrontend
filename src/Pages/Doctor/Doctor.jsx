@@ -116,70 +116,68 @@ function AvailableDatesModal({
     >
       <h2>{doctorName} - Çalışma Günleri</h2>
       <div className="availableDate">
-
-      <div className="available-newavailable">
-        <h2>Yeni Çalışma Günü Ekle :</h2>
-        <input
-          type="date"
-          placeholder="Tarih"
-          name="availableDate"
-          value={newAvailableDate.availableDate}
-          onChange={handleNewAvailableDate}
-        />
-        <input
-          type="text"
-          name="doctorId"
-          value={doctorId}
-          onChange={handleNewAvailableDate}
-          readOnly
-        />
-        <button onClick={handleCreate}>Ekle</button>
-      </div>
-      <div className="available-updateavailable">
-        <h2>Çalışma Gününü Güncelle :</h2>
-        <input
-          type="date"
-          placeholder="Tarih"
-          name="availableDate"
-          value={updateAvailable.availableDate || ""}
-          onChange={handleUpdateChange}
-        />
-        <input
-          type="text"
-          name="doctorId"
-          value={doctorId}
-          // onChange={handleUpdateChange}
-          readOnly
-        />
-        <button onClick={handleUpdate}>Güncelle</button>
-      </div>
-      <div className="available-list">
-        <h2>Çalışma Günleri</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Tarih</th>
-              <th>Güncelle</th>
-              <th>Sil</th>
-            </tr>
-          </thead>
-          <tbody>
-            {availableDates.map((date, index) => (
-              <tr key={index}>
-                <td>{date.availableDate}</td>
-                <td onClick={() => handleUpdateBtn(date)}>
-                  <UpdateIcon />
-                </td>
-                <td onClick={() => handleDelete(date.id)}>
-                  <DeleteIcon />
-                </td>
+        <div className="available-newavailable">
+          <h2>Yeni Çalışma Günü Ekle :</h2>
+          <input
+            type="date"
+            placeholder="Tarih"
+            name="availableDate"
+            value={newAvailableDate.availableDate}
+            onChange={handleNewAvailableDate}
+          />
+          <input
+            type="text"
+            name="doctorId"
+            value={doctorId}
+            onChange={handleNewAvailableDate}
+            readOnly
+          />
+          <button onClick={handleCreate}>Ekle</button>
+        </div>
+        <div className="available-updateavailable">
+          <h2>Çalışma Gününü Güncelle :</h2>
+          <input
+            type="date"
+            placeholder="Tarih"
+            name="availableDate"
+            value={updateAvailable.availableDate || ""}
+            onChange={handleUpdateChange}
+          />
+          <input
+            type="text"
+            name="doctorId"
+            value={doctorId}
+            // onChange={handleUpdateChange}
+            readOnly
+          />
+          <button onClick={handleUpdate}>Güncelle</button>
+        </div>
+        <div className="available-list">
+          <h2>Çalışma Günleri</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Tarih</th>
+                <th>Güncelle</th>
+                <th>Sil</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {availableDates.map((date, index) => (
+                <tr key={index}>
+                  <td>{date.availableDate}</td>
+                  <td onClick={() => handleUpdateBtn(date)}>
+                    <UpdateIcon />
+                  </td>
+                  <td onClick={() => handleDelete(date.id)}>
+                    <DeleteIcon />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-      </div>
-
       <button onClick={onClose}>Kapat</button>
     </Modal>
   );
@@ -383,7 +381,6 @@ function Doctor() {
           <table>
             <thead>
               <tr>
-                <th>ID</th>
                 <th>İsim</th>
                 <th>Telefon</th>
                 <th>E-posta</th>
@@ -397,7 +394,6 @@ function Doctor() {
             <tbody>
               {doctor.map((doctor) => (
                 <tr key={doctor.id}>
-                  <td>{doctor.id}</td>
                   <td>{doctor.name}</td>
                   <td>{doctor.phone}</td>
                   <td>{doctor.mail}</td>
@@ -417,6 +413,7 @@ function Doctor() {
             </tbody>
           </table>
         </div>
+
         <AvailableDatesModal
           isOpen={isModalOpen}
           onClose={handleCloseModal}

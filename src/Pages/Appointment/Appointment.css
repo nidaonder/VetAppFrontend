@@ -1,9 +1,36 @@
+.appointment {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    gap: 50px;
+    width: 95vw;
+    height: 100vh;
+    margin: 10px;
+}
+
 .appointment-list {
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
     justify-content: space-between;
     margin: 0 10px;
-    padding: 2rem;
     gap: 1rem;
+}
+
+.appointment-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.appointment-newappointment {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.appointment-updateappointment {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }

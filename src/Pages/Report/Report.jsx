@@ -48,7 +48,7 @@ function Report() {
 
   const handleNewReport = (event) => {
     const { name, value } = event.target;
-    if(name === "appointment") {
+    if (name === "appointment") {
       setNewReport({
         ...newReport,
         appointment: { id: value },
@@ -58,8 +58,8 @@ function Report() {
         ...newReport,
         [name]: value,
       });
-    };
-  }
+    }
+  };
 
   const handleCreate = () => {
     createReport(newReport).then(() => {
@@ -99,7 +99,7 @@ function Report() {
   };
 
   const preventNegative = (event) => {
-    if (event.key === '-') {
+    if (event.key === "-") {
       event.preventDefault();
     }
   };
@@ -110,112 +110,127 @@ function Report() {
     });
     getAppointments().then((data) => {
       setAppointments(data);
-    })
+    });
     setReload(false);
   }, [reload]);
 
   return (
     <>
-    <div className="report-newreport">
-        <h2>Yeni Rapor</h2>
-        <input
-          type="text"
-          placeholder="Başlık"
-          name="title"
-          value={newReport.title}
-          onChange={handleNewReport}
-        />
-        <input
-          type="text"
-          placeholder="Tanı"
-          name="diagnosis"
-          value={newReport.diagnosis}
-          onChange={handleNewReport}
-        />
-        <input
-          type="number"
-          placeholder="Tutar"
-          name="price"
-          min={0}
-          value={newReport.price}
-          onKeyDown={preventNegative}
-          onChange={handleNewReport}
-        />
-        <select
-          name="appointment"
-          value={newReport?.appointment?.id || ""}
-          onChange={handleNewReport}
-        >
-          <option value="" disabled>
-            Randevu Seçiniz
-          </option>
-          {appointments.map((appointment) => (
-            <option key={appointment.id} value={appointment.id}>
-              {appointment.appointmentDate} {appointment.doctor.name}
+      <div className="report">
+        <div className="report-newreport">
+          <h2>Yeni Rapor Ekle :</h2>
+          <input
+            type="text"
+            placeholder="Başlık"
+            name="title"
+            value={newReport.title}
+            onChange={handleNewReport}
+          />
+          <input
+            type="text"
+            placeholder="Tanı"
+            name="diagnosis"
+            value={newReport.diagnosis}
+            onChange={handleNewReport}
+          />
+          <input
+            type="number"
+            placeholder="Tutar"
+            name="price"
+            min={0}
+            value={newReport.price}
+            onKeyDown={preventNegative}
+            onChange={handleNewReport}
+          />
+          <select
+            name="appointment"
+            value={newReport?.appointment?.id || ""}
+            onChange={handleNewReport}
+          >
+            <option value="" disabled>
+              Randevu Seçiniz
             </option>
-          ))}
-        </select>
-        <button onClick={handleCreate}>Ekle</button>
-      </div>
-
-      <div className="report-updatereport">
-        <h2>Rapor Güncelle</h2>
-        <input
-          type="text"
-          placeholder="Başlık"
-          name="title"
-          value={updateReport.title}
-          onChange={handleUpdateChange}
-        />
-        <input
-          type="text"
-          placeholder="Tanı"
-          name="diagnosis"
-          value={updateReport.diagnosis}
-          onChange={handleUpdateChange}
-        />
-        <input
-          type="number"
-          placeholder="Tutar"
-          name="price"
-          min={0}
-          onKeyDown={preventNegative}
-          value={updateReport.price}
-          onChange={handleUpdateChange}
-        />
-        <select
-          name="appointment"
-          value={updateReport?.appointment?.id || ""}
-          onChange={handleUpdateChange}
-        >
-          <option value="" disabled>
-            Randevu Seçiniz
-          </option>
-          {appointments.map((appointment) => (
-            <option key={appointment.id} value={appointment.id}>
-              {appointment.appointmentDate} {appointment.doctor.name}
+            {appointments.map((appointment) => (
+              <option key={appointment.id} value={appointment.id}>
+                {appointment.appointmentDate} {appointment.doctor.name}
+              </option>
+            ))}
+          </select>
+          <button onClick={handleCreate}>Ekle</button>
+        </div>
+        <div className="report-updatereport">
+          <h2>Rapor Güncelle :</h2>
+          <input
+            type="text"
+            placeholder="Başlık"
+            name="title"
+            value={updateReport.title}
+            onChange={handleUpdateChange}
+          />
+          <input
+            type="text"
+            placeholder="Tanı"
+            name="diagnosis"
+            value={updateReport.diagnosis}
+            onChange={handleUpdateChange}
+          />
+          <input
+            type="number"
+            placeholder="Tutar"
+            name="price"
+            min={0}
+            onKeyDown={preventNegative}
+            value={updateReport.price}
+            onChange={handleUpdateChange}
+          />
+          <select
+            name="appointment"
+            value={updateReport?.appointment?.id || ""}
+            onChange={handleUpdateChange}
+          >
+            <option value="" disabled>
+              Randevu Seçiniz
             </option>
-          ))}
-        </select>
-        <button onClick={handleUpdate}>Güncelle</button>
-      </div>
-
-      <div className="report-list">
-        <h2>Rapor Listesi</h2>
-        {report.map((report) => (
-          <div key={report.id}>
-            <h3>
-              {report.id} {report.title}
-              <span onClick={() => handleDelete(report.id)}>
-                <DeleteIcon />
-              </span>
-              <span onClick={() => handleUpdateBtn(report)}>
-                <UpdateIcon />
-              </span>
-            </h3>
-            {report.diagnosis}
-          </div>
-        ))}
+            {appointments.map((appointment) => (
+              <option key={appointment.id} value={appointment.id}>
+                {appointment.appointmentDate} {appointment.doctor.name}
+              </option>
+            ))}
+          </select>
+          <button onClick={handleUpdate}>Güncelle</button>
+        </div>
+        <div className="report-list">
+          <h2>Rapor Listesi</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Başlık</th>
+                <th>Tanı</th>
+                <th>Fiyat</th>
+                <th>Randevu Tarihi</th>
+                <th>Sil</th>
+                <th>Güncelle</th>
+              </tr>
+            </thead>
+            <tbody>
+              {report.map((report) => (
+                <tr key={report.id}>
+                  <td>{report.title}</td>
+                  <td>{report.diagnosis}</td>
+                  <td>{report.price}</td>
+                  <td>{report.appointment.appointmentDate}</td>{" "}
+                  {/* Burası düzeltilmiştir */}
+                  <td onClick={() => handleDelete(report.id)}>
+                    <DeleteIcon />
+                  </td>
+                  <td onClick={() => handleUpdateBtn(report)}>
+                    <UpdateIcon />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </>
   );

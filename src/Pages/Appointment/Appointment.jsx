@@ -38,7 +38,7 @@ function Appointment() {
     const isInDateRange =
       (!startDate || apptDate >= start) && (!endDate || apptDate <= end);
 
-    return (matchesDoctorName && matchesAnimalName) && isInDateRange;
+    return matchesDoctorName && matchesAnimalName && isInDateRange;
   });
 
   Modal.setAppElement("#root");
@@ -162,128 +162,141 @@ function Appointment() {
 
   return (
     <>
-      <div className="filter-section">
-        <input
-          type="text"
-          placeholder="Doktor adı ile filtrele"
-          value={doctorFilter}
-          onChange={(e) => setDoctorFilter(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Animal adı ile filtrele"
-          value={animalFilter}
-          onChange={(e) => setAnimalFilter(e.target.value)}
-        />
-        <input
-          type="date"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-        />
-        <input
-          type="date"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-        />
+      <div className="appointment">
+        <div className="appointment-search">
+          <h2>Arama Yap :</h2>
+          <input
+            type="text"
+            placeholder="Doktor adı ile filtrele"
+            value={doctorFilter}
+            onChange={(e) => setDoctorFilter(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Animal adı ile filtrele"
+            value={animalFilter}
+            onChange={(e) => setAnimalFilter(e.target.value)}
+          />
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+          />
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+          />
+        </div>
+        <div className="appointment-newappointment">
+          <h2>Yeni Randevu Ekle :</h2>
+          <input
+            type="datetime-local"
+            placeholder="Tarih"
+            name="appointmentDate"
+            value={newAppointment.appointmentDate}
+            onChange={handleNewAppointment}
+          />
+          <select
+            name="animal"
+            value={newAppointment?.animal?.id || ""}
+            onChange={handleNewAppointment}
+          >
+            <option value="" disabled>
+              Pet Seçiniz
+            </option>
+            {animals.map((animal) => (
+              <option key={animal.id} value={animal.id}>
+                {animal.name}
+              </option>
+            ))}
+          </select>
+          <select
+            name="doctor"
+            value={newAppointment?.doctor?.id || ""}
+            onChange={handleNewAppointment}
+          >
+            <option value="" disabled>
+              Doktor Seçiniz
+            </option>
+            {doctors.map((doctor) => (
+              <option key={doctor.id} value={doctor.id}>
+                {doctor.name}
+              </option>
+            ))}
+          </select>
+          <button onClick={handleCreate}>Create</button>
+        </div>
+        <div className="appointment-updateappointment">
+          <h2>Randevu Güncelle :</h2>
+          <input
+            type="datetime-local"
+            placeholder="Tarih"
+            name="appointmentDate"
+            value={updateAppointment.appointmentDate}
+            onChange={handleUpdateChange}
+          />
+          <select
+            name="animal"
+            value={updateAppointment.animal || ""}
+            onChange={handleUpdateChange}
+          >
+            <option value="" disabled>
+              Pet Seçiniz
+            </option>
+            {animals.map((animal) => (
+              <option key={animal.id} value={animal.id}>
+                {animal.name}
+              </option>
+            ))}
+          </select>
+          <select
+            name="doctor"
+            value={updateAppointment.doctor || ""}
+            onChange={handleUpdateChange}
+          >
+            <option value="" disabled>
+              Doktor Seçiniz
+            </option>
+            {doctors.map((doctor) => (
+              <option key={doctor.id} value={doctor.id}>
+                {doctor.name}
+              </option>
+            ))}
+          </select>
+          <button onClick={handleUpdate}>Update</button>
+        </div>
+        <div className="appointment-list">
+          <h2>Randevu Listesi</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Randevu Tarihi</th>
+                <th>Hayvan</th>
+                <th>Doktor</th>
+                <th>Sil</th>
+                <th>Güncelle</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredAppointments.map((appointment) => (
+                <tr key={appointment.id}>
+                  <td>{appointment.appointmentDate}</td>
+                  <td>{appointment.animal.name}</td>
+                  <td>{appointment.doctor.name}</td>
+                  <td onClick={() => handleDelete(appointment.id)}>
+                    <DeleteIcon />
+                  </td>
+                  <td onClick={() => handleUpdateBtn(appointment)}>
+                    <UpdateIcon />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      <div className="appointment-newappointment">
-        <h2>Yeni Randevu</h2>
-        <input
-          type="datetime-local"
-          placeholder="Tarih"
-          name="appointmentDate"
-          value={newAppointment.appointmentDate}
-          onChange={handleNewAppointment}
-        />
-        <select
-          name="animal"
-          value={newAppointment?.animal?.id || ""}
-          onChange={handleNewAppointment}
-        >
-          <option value="" disabled>
-            Pet Seçiniz
-          </option>
-          {animals.map((animal) => (
-            <option key={animal.id} value={animal.id}>
-              {animal.name}
-            </option>
-          ))}
-        </select>
-        <select
-          name="doctor"
-          value={newAppointment?.doctor?.id || ""}
-          onChange={handleNewAppointment}
-        >
-          <option value="" disabled>
-            Doktor Seçiniz
-          </option>
-          {doctors.map((doctor) => (
-            <option key={doctor.id} value={doctor.id}>
-              {doctor.name}
-            </option>
-          ))}
-        </select>
-        <button onClick={handleCreate}>Create</button>
-      </div>
-      <div className="appointment-updateappointment">
-        <h2>Randevu Güncelle</h2>
-        <input
-          type="datetime-local"
-          placeholder="Tarih"
-          name="appointmentDate"
-          value={updateAppointment.appointmentDate}
-          onChange={handleUpdateChange}
-        />
-        <select
-          name="animal"
-          value={updateAppointment.animal || ""}
-          onChange={handleUpdateChange}
-        >
-          <option value="" disabled>
-            Pet Seçiniz
-          </option>
-          {animals.map((animal) => (
-            <option key={animal.id} value={animal.id}>
-              {animal.name}
-            </option>
-          ))}
-        </select>
-        <select
-          name="doctor"
-          value={updateAppointment.doctor || ""}
-          onChange={handleUpdateChange}
-        >
-          <option value="" disabled>
-            Doktor Seçiniz
-          </option>
-          {doctors.map((doctor) => (
-            <option key={doctor.id} value={doctor.id}>
-              {doctor.name}
-            </option>
-          ))}
-        </select>
-        <button onClick={handleUpdate}>Update</button>
-      </div>
-
-      <div className="appointment-list">
-        <h2>Randevu Listesi</h2>
-        {filteredAppointments.map((appointment) => (
-          <div key={appointment.id}>
-            <h3>
-              {appointment.appointmentDate} {appointment.doctor.name}
-              <span onClick={() => handleDelete(appointment.id)}>
-                <DeleteIcon />
-              </span>
-              <span onClick={() => handleUpdateBtn(appointment)}>
-                <UpdateIcon />
-              </span>
-            </h3>
-            {appointment.id} {appointment.animal.name}
-          </div>
-        ))}
-      </div>
-      
       <Modal
         isOpen={isErrorModalOpen}
         onRequestClose={() => setIsErrorModalOpen(false)}
