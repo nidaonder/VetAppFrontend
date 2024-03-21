@@ -100,7 +100,7 @@ function Customer() {
   return (
     <div className="customer">
       <div className="customer-search">
-        <h2>İsme göre filtrele</h2>
+        <h2>İsme göre filtrele :</h2>
         <input
           type="text"
           placeholder="Müşteri ara"
@@ -109,7 +109,7 @@ function Customer() {
         />
       </div>
       <div className="customer-newcustomer">
-        <h2>Yeni Müşteri</h2>
+        <h2>Yeni Müşteri Ekle :</h2>
         <input
           type="text"
           placeholder="Adı"
@@ -148,7 +148,7 @@ function Customer() {
         <button onClick={handleCreate}>Ekle</button>
       </div>
       <div className="customer-updatecustomer">
-        <h2>Müşteri Güncelle</h2>
+        <h2>Müşteri Güncelle :</h2>
         <input
           type="text"
           placeholder="Adı"
@@ -186,23 +186,62 @@ function Customer() {
         />
         <button onClick={handleUpdate}>Güncelle</button>
       </div>
+
+
+
       <div className="customer-list">
+  <h2>Müşteri Listesi</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>İsim</th>
+        <th>Telefon</th>
+        <th>E-posta</th>
+        <th>Adres</th>
+        <th>Şehir</th>
+        <th>Sil</th>
+        <th>Güncelle</th>
+      </tr>
+    </thead>
+    <tbody>
+      {filteredCustomers.map((customer) => (
+        <tr key={customer.id}>
+          <td>{customer.name}</td>
+          <td>{customer.phone}</td>
+          <td>{customer.mail}</td>
+          <td>{customer.address}</td>
+          <td>{customer.city}</td>
+          <td onClick={() => handleDelete(customer.id)}><DeleteIcon /></td>
+          <td onClick={() => handleUpdateBtn(customer)}><UpdateIcon /></td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
+
+
+
+
+
+      {/* <div className="customer-list">
         <h2>Müşteri Listesi</h2>
         {filteredCustomers.map((customer) => (
-          <div key={customer.id}>
-            <h3>
-              {customer.name}
-              <span onClick={() => handleDelete(customer.id)}>
-                <DeleteIcon />
-              </span>
-              <span onClick={() => handleUpdateBtn(customer)}>
-                <UpdateIcon />
-              </span>
-            </h3>
-            {customer.mail}
+          <div className="customers" key={customer.id}>
+            <p>{customer.name}</p>
+            <p>{customer.phone}</p>
+            <p>{customer.mail}</p>
+            <p>{customer.address}</p>
+            <p>{customer.city}</p>
+            <p onClick={() => handleDelete(customer.id)}>
+            <DeleteIcon />
+            </p>
+            <p onClick={() => handleUpdateBtn(customer)}>
+            <UpdateIcon />
+            </p>
           </div>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 }

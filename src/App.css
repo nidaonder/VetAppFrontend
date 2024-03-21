@@ -16,3 +16,7 @@ nav {
     gap: 1rem;
     padding: 10px;
 }
+
+input {
+    padding: 5px;
+}
