@@ -134,22 +134,27 @@ export default function Animal() {
   }, [reload]);
 
   return (
-    <>
+    <div className="animal">
       <div className="search-inputs">
-        <input
-          type="text"
-          placeholder="Pet adıyla ara"
-          value={searchQueryAnimal}
-          onChange={(e) => setSearchQueryAnimal(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Müşteri adıyla ara"
-          value={searchQueryCustomer}
-          onChange={(e) => setSearchQueryCustomer(e.target.value)}
-        />
+        <div className="input-petname">
+          <h2>Pet ismine göre filtrele</h2>
+          <input
+            type="text"
+            placeholder="Pet adıyla ara"
+            value={searchQueryAnimal}
+            onChange={(e) => setSearchQueryAnimal(e.target.value)}
+          />
+        </div>
+        <div className="input-customername">
+          <h2>Müşteri ismine göre filtrele</h2>
+          <input
+            type="text"
+            placeholder="Müşteri adıyla ara"
+            value={searchQueryCustomer}
+            onChange={(e) => setSearchQueryCustomer(e.target.value)}
+          />
+        </div>
       </div>
-
       <div className="animal-newanimal">
         <h2>Yeni Pet</h2>
         <input
@@ -215,7 +220,7 @@ export default function Animal() {
           ))}
         </select>
 
-        <button onClick={handleCreate}>Create</button>
+        <button onClick={handleCreate}>Ekle</button>
       </div>
       <div className="animal-updateanimal">
         <h2>Pet Güncelle</h2>
@@ -280,9 +285,8 @@ export default function Animal() {
             </option>
           ))}
         </select>
-        <button onClick={handleUpdate}>Update</button>
+        <button onClick={handleUpdate}>Güncelle</button>
       </div>
-
       <div className="animal-list">
         <h2>Pet Listesi</h2>
         {filteredAnimals.map((animal) => (
@@ -301,6 +305,6 @@ export default function Animal() {
           </div>
         ))}
       </div>
-    </>
+    </div>
   );
 }

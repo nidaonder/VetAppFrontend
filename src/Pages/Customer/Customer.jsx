@@ -98,9 +98,9 @@ function Customer() {
   };
 
   return (
-    <>
-      <h1>Müşteri Yönetimi</h1>
+    <div className="customer">
       <div className="customer-search">
+        <h2>İsme göre filtrele</h2>
         <input
           type="text"
           placeholder="Müşteri ara"
@@ -203,7 +203,7 @@ function Customer() {
           </div>
         ))}
       </div>
-    </>
+    </div>
   );
 }
 

@@ -12,7 +12,7 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import { Block } from "@mui/icons-material";
+// import { Block } from "@mui/icons-material";
 import PetsIcon from "@mui/icons-material/Pets";
 
 const pages = [
@@ -56,7 +56,7 @@ function Navbar() {
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
+              fontFamily: "sans-serif",
               fontWeight: 700,
               letterSpacing: ".3rem",
               color: "inherit",
@@ -97,7 +97,7 @@ function Navbar() {
             >
               {pages.map((page) => (
                 <MenuItem key={page.name} onClick={handleCloseNavMenu}>
-                  <Link to={page.path}>{page.name}</Link>
+                  <Link to={page.path} style={{ textDecoration: 'none', color: 'black' }}>{page.name}</Link>
                 </MenuItem>
               ))}
             </Menu>
@@ -107,12 +107,12 @@ function Navbar() {
             variant="h5"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href="/"
             sx={{
               mr: 2,
               display: { xs: "flex", md: "none" },
               flexGrow: 1,
-              fontFamily: "monospace",
+              fontFamily: "sans-serif",
               fontWeight: 700,
               letterSpacing: ".3rem",
               color: "inherit",
@@ -128,7 +128,7 @@ function Navbar() {
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: "white", display: "block" }}
               >
-                <Link to={page.path}>{page.name}</Link>
+                <Link to={page.path} style={{ textDecoration: 'none', color: 'white' }}>{page.name}</Link>
               </Button>
             ))}
           </Box>
