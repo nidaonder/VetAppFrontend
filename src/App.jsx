@@ -10,6 +10,7 @@ import Navbar from "./Components/Navbar";
 import Home from "./Pages/Home/Home";
 
 function App() {
+  // Değerlendirme 7
   return (
     <>
       <Navbar />

@@ -98,6 +98,7 @@ function Customer() {
   };
 
   return (
+    // Değerlendirme 8-9
     <div className="customer">
       <div className="customer-search">
         <h2>İsme göre filtrele :</h2>

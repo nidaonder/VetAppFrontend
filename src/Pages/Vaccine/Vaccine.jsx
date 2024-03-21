@@ -128,6 +128,7 @@ function Vaccine() {
   };
 
   return (
+    // Değerlendirme 14-15
     <>
       <div className="vaccine">
         <div className="animalname-search">

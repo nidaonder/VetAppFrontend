@@ -21,7 +21,6 @@ export default function Animal() {
     gender: "",
     colour: "",
     dateOfBirth: "",
-    // customer: "",
   });
   const [searchQueryAnimal, setSearchQueryAnimal] = useState("");
   const [searchQueryCustomer, setSearchQueryCustomer] = useState("");
@@ -63,7 +62,6 @@ export default function Animal() {
       gender: "",
       colour: "",
       dateOfBirth: "",
-      // customer: "",
     });
   };
 
@@ -134,6 +132,7 @@ export default function Animal() {
   }, [reload]);
 
   return (
+    //Değerlendirme 10-11
     <div className="animal">
       <div className="input-petname">
         <h2>Pet ismine göre filtrele :</h2>
@@ -153,7 +152,6 @@ export default function Animal() {
           onChange={(e) => setSearchQueryCustomer(e.target.value)}
         />
       </div>
-
       <div className="animal-newanimal">
         <h2>Yeni Pet Ekle :</h2>
         <input
@@ -286,7 +284,6 @@ export default function Animal() {
         </select>
         <button onClick={handleUpdate}>Güncelle</button>
       </div>
-
       <div className="animal-list">
         <h2>Pet Listesi</h2>
         <table>

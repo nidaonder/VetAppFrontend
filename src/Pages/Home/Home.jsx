@@ -1,6 +1,7 @@
 import React from 'react'
 import "./Home.css"
 
+// Değerlendirme 6
 function Home() {
   return (
     <>

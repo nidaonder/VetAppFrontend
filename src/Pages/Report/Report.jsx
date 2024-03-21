@@ -115,6 +115,7 @@ function Report() {
   }, [reload]);
 
   return (
+    // Değerlendirme 18
     <>
       <div className="report">
         <div className="report-newreport">

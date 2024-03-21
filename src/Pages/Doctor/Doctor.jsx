@@ -94,6 +94,7 @@ function AvailableDatesModal({
     });
   };
 
+  // Değerlendirme 13
   return (
     <Modal
       isOpen={isOpen}
@@ -295,6 +296,7 @@ function Doctor() {
   }, [reload]);
 
   return (
+    // Değerlendirme 12
     <>
       <div className="doctor">
         <div className="doctor-newdoctor">

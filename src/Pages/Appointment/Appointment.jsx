@@ -102,7 +102,6 @@ function Appointment() {
       appointmentDate: appointment.appointmentDate,
       animal: appointment.animal.id,
       doctor: appointment.doctor.id,
-      // report: appointment.report,
     });
   };
 
@@ -161,6 +160,7 @@ function Appointment() {
   }, [reload]);
 
   return (
+    // Değerlendirme 16-17
     <>
       <div className="appointment">
         <div className="appointment-search">
