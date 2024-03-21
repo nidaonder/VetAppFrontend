@@ -46,7 +46,7 @@ function AvailableDatesModal({
     setUpdateAvailable({
       id: aDate.id,
       availableDate: aDate.availableDate,
-      doctor: { id: doctorId }, 
+      doctor: { id: doctorId },
     });
   };
 
@@ -108,15 +108,17 @@ function AvailableDatesModal({
           bottom: "auto",
           marginRight: "-50%",
           transform: "translate(-50%, -50%)",
-          width: "600px",
-          height: "400px",
+          width: "800px",
+          height: "600px",
           overflow: "auto",
         },
       }}
     >
-      <h2>{doctorName} - Müsait Günler</h2>
+      <h2>{doctorName} - Çalışma Günleri</h2>
+      <div className="availableDate">
+
       <div className="available-newavailable">
-        <h2>Yeni Müsait Gün</h2>
+        <h2>Yeni Çalışma Günü Ekle :</h2>
         <input
           type="date"
           placeholder="Tarih"
@@ -134,6 +136,7 @@ function AvailableDatesModal({
         <button onClick={handleCreate}>Ekle</button>
       </div>
       <div className="available-updateavailable">
+        <h2>Çalışma Gününü Güncelle :</h2>
         <input
           type="date"
           placeholder="Tarih"
@@ -150,19 +153,33 @@ function AvailableDatesModal({
         />
         <button onClick={handleUpdate}>Güncelle</button>
       </div>
-      <ul>
-        {availableDates.map((date, index) => (
-          <li key={index}>
-            {date.availableDate}
-            <span onClick={() => handleUpdateBtn(date)}>
-              <UpdateIcon />
-            </span>
-            <span onClick={() => handleDelete(date.id)}>
-              <DeleteIcon />
-            </span>
-          </li>
-        ))}
-      </ul>
+      <div className="available-list">
+        <h2>Çalışma Günleri</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Tarih</th>
+              <th>Güncelle</th>
+              <th>Sil</th>
+            </tr>
+          </thead>
+          <tbody>
+            {availableDates.map((date, index) => (
+              <tr key={index}>
+                <td>{date.availableDate}</td>
+                <td onClick={() => handleUpdateBtn(date)}>
+                  <UpdateIcon />
+                </td>
+                <td onClick={() => handleDelete(date.id)}>
+                  <DeleteIcon />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      </div>
+
       <button onClick={onClose}>Kapat</button>
     </Modal>
   );
@@ -282,111 +299,132 @@ function Doctor() {
 
   return (
     <>
-      <div className="doctor-newdoctor">
-        <h2>Yeni Doktor</h2>
-        <input
-          type="text"
-          placeholder="Adı"
-          name="name"
-          value={newDoctor.name}
-          onChange={handleNewDoctor}
+      <div className="doctor">
+        <div className="doctor-newdoctor">
+          <h2>Doktor Ekle :</h2>
+          <input
+            type="text"
+            placeholder="Adı"
+            name="name"
+            value={newDoctor.name}
+            onChange={handleNewDoctor}
+          />
+          <input
+            type="text"
+            placeholder="Telefon"
+            name="phone"
+            value={newDoctor.phone}
+            onChange={handleNewDoctor}
+          />
+          <input
+            type="text"
+            placeholder="E-Mail"
+            name="mail"
+            value={newDoctor.mail}
+            onChange={handleNewDoctor}
+          />
+          <input
+            type="text"
+            placeholder="Adres"
+            name="address"
+            value={newDoctor.address}
+            onChange={handleNewDoctor}
+          />
+          <input
+            type="text"
+            placeholder="Şehir"
+            name="city"
+            value={newDoctor.city}
+            onChange={handleNewDoctor}
+          />
+          <button onClick={handleCreate}>Ekle</button>
+        </div>
+        <div className="doctor-updatedoctor">
+          <h2>Doktor Güncelle :</h2>
+          <input
+            type="text"
+            placeholder="Adı"
+            name="name"
+            value={updateDoctor.name}
+            onChange={handleUpdateChange}
+          />
+          <input
+            type="text"
+            placeholder="Telefon"
+            name="phone"
+            value={updateDoctor.phone}
+            onChange={handleUpdateChange}
+          />
+          <input
+            type="text"
+            placeholder="E-Mail"
+            name="mail"
+            value={updateDoctor.mail}
+            onChange={handleUpdateChange}
+          />
+          <input
+            type="text"
+            placeholder="Adress"
+            name="address"
+            value={updateDoctor.address}
+            onChange={handleUpdateChange}
+          />
+          <input
+            type="text"
+            placeholder="Şehir"
+            name="city"
+            value={updateDoctor.city}
+            onChange={handleUpdateChange}
+          />
+          <button onClick={handleUpdate}>Güncelle</button>
+        </div>
+        <div className="doctor-list">
+          <h2>Doktor Listesi</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>İsim</th>
+                <th>Telefon</th>
+                <th>E-posta</th>
+                <th>Adres</th>
+                <th>Şehir</th>
+                <th>Sil</th>
+                <th>Güncelle</th>
+                <th>Çalışma Günleri</th>
+              </tr>
+            </thead>
+            <tbody>
+              {doctor.map((doctor) => (
+                <tr key={doctor.id}>
+                  <td>{doctor.id}</td>
+                  <td>{doctor.name}</td>
+                  <td>{doctor.phone}</td>
+                  <td>{doctor.mail}</td>
+                  <td>{doctor.address}</td>
+                  <td>{doctor.city}</td>
+                  <td onClick={() => handleDelete(doctor.id)}>
+                    <DeleteIcon />
+                  </td>
+                  <td onClick={() => handleUpdateBtn(doctor)}>
+                    <UpdateIcon />
+                  </td>
+                  <td onClick={() => handleShowAvailableDates(doctor)}>
+                    <EventAvailableIcon />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <AvailableDatesModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          availableDates={currentDoctorAvailableDates}
+          doctorName={currentDoctorName}
+          doctorId={currentDoctorId}
         />
-        <input
-          type="text"
-          placeholder="Telefon"
-          name="phone"
-          value={newDoctor.phone}
-          onChange={handleNewDoctor}
-        />
-        <input
-          type="text"
-          placeholder="E-Mail"
-          name="mail"
-          value={newDoctor.mail}
-          onChange={handleNewDoctor}
-        />
-        <input
-          type="text"
-          placeholder="Adres"
-          name="address"
-          value={newDoctor.address}
-          onChange={handleNewDoctor}
-        />
-        <input
-          type="text"
-          placeholder="Şehir"
-          name="city"
-          value={newDoctor.city}
-          onChange={handleNewDoctor}
-        />
-        <button onClick={handleCreate}>Create</button>
       </div>
-      <div className="doctor-updatedoctor">
-        <h2>Doktor Güncelle</h2>
-        <input
-          type="text"
-          placeholder="Adı"
-          name="name"
-          value={updateDoctor.name}
-          onChange={handleUpdateChange}
-        />
-        <input
-          type="text"
-          placeholder="Telefon"
-          name="phone"
-          value={updateDoctor.phone}
-          onChange={handleUpdateChange}
-        />
-        <input
-          type="text"
-          placeholder="E-Mail"
-          name="mail"
-          value={updateDoctor.mail}
-          onChange={handleUpdateChange}
-        />
-        <input
-          type="text"
-          placeholder="Adress"
-          name="address"
-          value={updateDoctor.address}
-          onChange={handleUpdateChange}
-        />
-        <input
-          type="text"
-          placeholder="Şehir"
-          name="city"
-          value={updateDoctor.city}
-          onChange={handleUpdateChange}
-        />
-        <button onClick={handleUpdate}>Update</button>
-      </div>
-      <div className="doctor-list">
-        <h2>Doktor Listesi</h2>
-        {doctor.map((doctor) => (
-          <div key={doctor.id}>
-            <h3>
-              {doctor.id} {doctor.name}
-              <span onClick={() => handleDelete(doctor.id)}>
-                <DeleteIcon />
-              </span>
-              <span onClick={() => handleUpdateBtn(doctor)}>
-                <UpdateIcon />
-              </span>
-              <span onClick={() => handleShowAvailableDates(doctor)}>
-                <EventAvailableIcon />
-              </span>
-            </h3>
-            {doctor.phone}
-          </div>
-        ))}
-      </div>
-      <AvailableDatesModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        availableDates={currentDoctorAvailableDates}
-        doctorName={currentDoctorName}
-        doctorId={currentDoctorId}
-      />
     </>
   );
 }

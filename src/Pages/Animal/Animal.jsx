@@ -135,28 +135,27 @@ export default function Animal() {
 
   return (
     <div className="animal">
-      <div className="search-inputs">
-        <div className="input-petname">
-          <h2>Pet ismine göre filtrele</h2>
-          <input
-            type="text"
-            placeholder="Pet adıyla ara"
-            value={searchQueryAnimal}
-            onChange={(e) => setSearchQueryAnimal(e.target.value)}
-          />
-        </div>
-        <div className="input-customername">
-          <h2>Müşteri ismine göre filtrele</h2>
-          <input
-            type="text"
-            placeholder="Müşteri adıyla ara"
-            value={searchQueryCustomer}
-            onChange={(e) => setSearchQueryCustomer(e.target.value)}
-          />
-        </div>
+      <div className="input-petname">
+        <h2>Pet ismine göre filtrele :</h2>
+        <input
+          type="text"
+          placeholder="Pet adıyla ara"
+          value={searchQueryAnimal}
+          onChange={(e) => setSearchQueryAnimal(e.target.value)}
+        />
       </div>
+      <div className="input-customername">
+        <h2>Müşteri ismine göre filtrele :</h2>
+        <input
+          type="text"
+          placeholder="Müşteri adıyla ara"
+          value={searchQueryCustomer}
+          onChange={(e) => setSearchQueryCustomer(e.target.value)}
+        />
+      </div>
+
       <div className="animal-newanimal">
-        <h2>Yeni Pet</h2>
+        <h2>Yeni Pet Ekle :</h2>
         <input
           type="text"
           placeholder="Adı"
@@ -223,7 +222,7 @@ export default function Animal() {
         <button onClick={handleCreate}>Ekle</button>
       </div>
       <div className="animal-updateanimal">
-        <h2>Pet Güncelle</h2>
+        <h2>Pet Güncelle :</h2>
         <input
           type="text"
           placeholder="Adı"
@@ -287,23 +286,43 @@ export default function Animal() {
         </select>
         <button onClick={handleUpdate}>Güncelle</button>
       </div>
+
       <div className="animal-list">
         <h2>Pet Listesi</h2>
-        {filteredAnimals.map((animal) => (
-          <div key={animal.id}>
-            <h3>
-              {animal.name} -{" "}
-              {animal.customer ? animal.customer.name : "Sahipsiz"}
-              <span onClick={() => handleDelete(animal.id)}>
-                <DeleteIcon />
-              </span>
-              <span onClick={() => handleUpdateBtn(animal)}>
-                <UpdateIcon />
-              </span>
-            </h3>
-            {animal.species} - {animal.breed}
-          </div>
-        ))}
+        <table>
+          <thead>
+            <tr>
+              <th>İsim</th>
+              <th>Tür</th>
+              <th>Irk</th>
+              <th>Cinsiyet</th>
+              <th>Renk</th>
+              <th>Doğum Tarihi</th>
+              <th>Sahibi</th>
+              <th>Sil</th>
+              <th>Güncelle</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredAnimals.map((animal) => (
+              <tr key={animal.id}>
+                <td>{animal.name}</td>
+                <td>{animal.species}</td>
+                <td>{animal.breed}</td>
+                <td>{animal.gender}</td>
+                <td>{animal.colour}</td>
+                <td>{animal.dateOfBirth}</td>
+                <td>{animal.customer ? animal.customer.name : "Sahipsiz"}</td>
+                <td onClick={() => handleDelete(animal.id)}>
+                  <DeleteIcon />
+                </td>
+                <td onClick={() => handleUpdateBtn(animal)}>
+                  <UpdateIcon />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
