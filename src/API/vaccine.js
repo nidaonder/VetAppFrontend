@@ -33,8 +33,8 @@ export const getVaccinesInDateRange = async (startDate, endDate) => {
     const { data } = await axios.get(
         `${import.meta.env.VITE_APP_BASE_URL}/api/v1/vaccines/date-range`, {
             params: {
-                startDate, // Doğrudan string olarak kullanılıyor
-                endDate // Doğrudan string olarak kullanılıyor
+                startDate,
+                endDate
             }
         }
     );

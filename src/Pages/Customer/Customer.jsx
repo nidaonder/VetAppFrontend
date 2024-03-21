@@ -119,7 +119,7 @@ function Customer() {
         />
         <input
           type="text"
-          placeholder="Telefon"
+          placeholder="Telefon (555-555-5555)"
           name="phone"
           value={newCustomer.phone}
           onChange={handleNewCustomer}
@@ -158,7 +158,7 @@ function Customer() {
         />
         <input
           type="text"
-          placeholder="Telefon"
+          placeholder="Telefon (555-555-5555)"
           name="phone"
           value={updateCustomer.phone}
           onChange={handleUpdateChange}

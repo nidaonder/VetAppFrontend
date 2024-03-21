@@ -147,7 +147,6 @@ function AvailableDatesModal({
             type="text"
             name="doctorId"
             value={doctorId}
-            // onChange={handleUpdateChange}
             readOnly
           />
           <button onClick={handleUpdate}>Güncelle</button>
@@ -309,7 +308,7 @@ function Doctor() {
           />
           <input
             type="text"
-            placeholder="Telefon"
+            placeholder="Telefon (555-555-5555)"
             name="phone"
             value={newDoctor.phone}
             onChange={handleNewDoctor}
@@ -348,7 +347,7 @@ function Doctor() {
           />
           <input
             type="text"
-            placeholder="Telefon"
+            placeholder="Telefon (555-555-5555)"
             name="phone"
             value={updateDoctor.phone}
             onChange={handleUpdateChange}
