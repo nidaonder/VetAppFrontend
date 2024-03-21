@@ -6,6 +6,7 @@ import {
   deleteVaccine,
   createVaccine,
   updateVaccineFunc,
+  getVaccinesInDateRange,
 } from "../../API/vaccine";
 import { getAnimals } from "../../API/animal";
 import { getReports } from "../../API/report";
@@ -32,11 +33,15 @@ function Vaccine() {
     animal: vaccine.animal,
     report: vaccine.report,
   });
-
+  const [animalNameQuery, setAnimalNameQuery] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
-  const filteredVaccines = vaccine.filter((vac) =>
-    vac.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredVaccines = vaccine.filter(
+    (vac) =>
+      vac.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
+      vac.animal.name.toLowerCase().includes(animalNameQuery.toLowerCase())
   );
 
   useEffect(() => {
@@ -105,6 +110,16 @@ function Vaccine() {
     });
   };
 
+  const handleSearchByDateRange = () => {
+    if (startDate && endDate) {
+      getVaccinesInDateRange(startDate, endDate).then(data => {
+        setVaccine(data);
+      });
+    } else {
+      alert('Lütfen başlangıç ve bitiş tarihlerini giriniz.');
+    }
+  };
+
   const handleUpdateChange = (event) => {
     setUpdateVaccine({
       ...updateVaccine,
@@ -115,6 +130,31 @@ function Vaccine() {
   return (
     <>
       <div className="vaccine">
+        <div className="animalname-search">
+          <h2>Pet Adına Göre Filtrele :</h2>
+          <input
+            type="text"
+            placeholder="Pet adı"
+            value={animalNameQuery}
+            onChange={(e) => setAnimalNameQuery(e.target.value)}
+          />
+        </div>
+        <div className="date-search">
+          <h2>Tarih Aralığına Göre Filtrele :</h2>
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+          />
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+          />
+          <button onClick={handleSearchByDateRange}>
+            Tarih Aralığına Göre Ara
+          </button>
+        </div>
         <div className="vaccine-newvaccine">
           <h2>Yeni Aşı :</h2>
           <input
@@ -126,7 +166,7 @@ function Vaccine() {
           />
           <input
             type="text"
-            placeholder="Kod"
+            placeholder="Kod (XXX-00)"
             name="code"
             value={newVaccine.code}
             onChange={handleNewVaccine}
@@ -189,7 +229,7 @@ function Vaccine() {
           />
           <input
             type="text"
-            placeholder="Kod"
+            placeholder="Kod (XXX-00)"
             name="code"
             value={updateVaccine.code}
             onChange={handleUpdateChange}
@@ -248,6 +288,9 @@ function Vaccine() {
               <tr>
                 <th>Aşı Adı</th>
                 <th>Kod</th>
+                <th>Pet Adı</th>
+                <th>Koruyuculuk Başlangıç</th>
+                <th>Koruyuculuk Bitiş</th>
                 <th>Sil</th>
                 <th>Güncelle</th>
               </tr>
@@ -257,6 +300,9 @@ function Vaccine() {
                 <tr key={vaccine.id}>
                   <td>{vaccine.name}</td>
                   <td>{vaccine.code}</td>
+                  <td>{vaccine.animal ? vaccine.animal.name : "Bilinmiyor"}</td>
+                  <td>{vaccine.protectionStartDate}</td>
+                  <td>{vaccine.protectionFinishDate}</td>
                   <td onClick={() => handleDelete(vaccine.id)}>
                     <DeleteIcon />
                   </td>
