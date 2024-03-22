@@ -63,12 +63,38 @@ function Vaccine() {
     });
   };
 
+  // const handleNewVaccine = (event) => {
+  //   setNewVaccine({
+  //     ...newVaccine,
+  //     [event.target.name]: event.target.value,
+  //   });
+  // };
+
   const handleNewVaccine = (event) => {
-    setNewVaccine({
-      ...newVaccine,
-      [event.target.name]: event.target.value,
-    });
+    const { name, value } = event.target;
+  
+    // Eğer 'animal' veya 'report' seçiliyorsa, ilgili nesneyi bulup ayarla
+    if (name === "animal") {
+      const selectedAnimal = animals.find(animal => animal.id.toString() === value);
+      setNewVaccine(prevState => ({
+        ...prevState,
+        animal: selectedAnimal,
+      }));
+    } else if (name === "report") {
+      const selectedReport = reports.find(report => report.id.toString() === value);
+      setNewVaccine(prevState => ({
+        ...prevState,
+        report: selectedReport,
+      }));
+    } else {
+      // Diğer tüm alanlar için doğrudan değeri ayarla
+      setNewVaccine(prevState => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
   };
+  
 
   const handleCreate = () => {
     createVaccine(newVaccine).then(() => {
