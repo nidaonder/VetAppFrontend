@@ -12,11 +12,26 @@ import { getAnimals } from "../../API/animal";
 import { getReports } from "../../API/report";
 import "./Vaccine.css";
 
+function ErrorModal({ isOpen, onClose, message }) {
+  if (!isOpen) return null;
+
+  return (
+    <div className="modal-backdrop">
+      <div className="modal">
+        <p>{message}</p>
+        <button onClick={onClose}>Kapat</button>
+      </div>
+    </div>
+  );
+}
+
 function Vaccine() {
   const [vaccine, setVaccine] = useState([]);
   const [reload, setReload] = useState(true);
   const [animals, setAnimals] = useState([]);
   const [reports, setReports] = useState([]);
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [newVaccine, setNewVaccine] = useState({
     name: "",
     code: "",
@@ -63,51 +78,53 @@ function Vaccine() {
     });
   };
 
-  // const handleNewVaccine = (event) => {
-  //   setNewVaccine({
-  //     ...newVaccine,
-  //     [event.target.name]: event.target.value,
-  //   });
-  // };
-
   const handleNewVaccine = (event) => {
     const { name, value } = event.target;
-  
-    // Eğer 'animal' veya 'report' seçiliyorsa, ilgili nesneyi bulup ayarla
     if (name === "animal") {
-      const selectedAnimal = animals.find(animal => animal.id.toString() === value);
-      setNewVaccine(prevState => ({
+      const selectedAnimal = animals.find(
+        (animal) => animal.id.toString() === value
+      );
+      setNewVaccine((prevState) => ({
         ...prevState,
         animal: selectedAnimal,
       }));
     } else if (name === "report") {
-      const selectedReport = reports.find(report => report.id.toString() === value);
-      setNewVaccine(prevState => ({
+      const selectedReport = reports.find(
+        (report) => report.id.toString() === value
+      );
+      setNewVaccine((prevState) => ({
         ...prevState,
         report: selectedReport,
       }));
     } else {
-      // Diğer tüm alanlar için doğrudan değeri ayarla
-      setNewVaccine(prevState => ({
+      setNewVaccine((prevState) => ({
         ...prevState,
         [name]: value,
       }));
     }
   };
-  
 
   const handleCreate = () => {
-    createVaccine(newVaccine).then(() => {
-      setReload(true);
-    });
-    setNewVaccine({
-      name: "",
-      code: "",
-      protectionStartDate: "",
-      protectionFinishDate: "",
-      animal: vaccine.animal,
-      report: vaccine.report,
-    });
+    createVaccine(newVaccine)
+      .then(() => {
+        setReload(true);
+        setNewVaccine({
+          name: "",
+          code: "",
+          protectionStartDate: "",
+          protectionFinishDate: "",
+          animal: vaccine.animal,
+          report: vaccine.report,
+        });
+      })
+      .catch((error) => {
+        setIsErrorModalOpen(true);
+        setErrorMessage(
+          `Aşı eklenirken bir hata oluştu. Lütfen tekrar deneyiniz.
+          Koruyuculuk başlangıç tarihi bugün ya da geçmiş tarihli olmalı.
+          Aşı kodu XXX-00 formatında olmalı.`
+        );
+      });
   };
 
   const handleUpdate = () => {
@@ -138,11 +155,11 @@ function Vaccine() {
 
   const handleSearchByDateRange = () => {
     if (startDate && endDate) {
-      getVaccinesInDateRange(startDate, endDate).then(data => {
+      getVaccinesInDateRange(startDate, endDate).then((data) => {
         setVaccine(data);
       });
     } else {
-      alert('Lütfen başlangıç ve bitiş tarihlerini giriniz.');
+      alert("Lütfen başlangıç ve bitiş tarihlerini giriniz.");
     }
   };
 
@@ -342,6 +359,11 @@ function Vaccine() {
           </table>
         </div>
       </div>
+      <ErrorModal
+        isOpen={isErrorModalOpen}
+        onClose={() => setIsErrorModalOpen(false)}
+        message={errorMessage}
+      />
     </>
   );
 }

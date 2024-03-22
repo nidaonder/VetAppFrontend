@@ -219,8 +219,7 @@ function Report() {
                   <td>{report.title}</td>
                   <td>{report.diagnosis}</td>
                   <td>{report.price}</td>
-                  <td>{report.appointment.appointmentDate}</td>{" "}
-                  {/* Burası düzeltilmiştir */}
+                  <td>{report.appointment.appointmentDate}</td>
                   <td onClick={() => handleDelete(report.id)}>
                     <DeleteIcon />
                   </td>
