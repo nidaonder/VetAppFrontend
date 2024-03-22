@@ -1,7 +1,7 @@
 # Veterinary App
 
 - This project is a system that simulates the management of daily operations of veterinary clinics. It includes basic features such as recording animal and owner information, vaccine management, appointment creation and doctor management, and management of doctors available days.The UML diagram of the project has been added as a jpg file.
-- Live link of the project: https://vetapp-frontend-kappa.vercel.app/
+- Live link of the project: https://vetapp-frontend-henna.vercel.app/
 
 ## Technologies
 
