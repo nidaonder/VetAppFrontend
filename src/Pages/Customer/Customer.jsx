@@ -6,12 +6,13 @@ import {
   deleteCustomer,
   createCustomer,
   updateCustomerFunc,
+  getCustomersByName,
 } from "../../API/customer";
 import "./Customer.css";
 
 function Customer() {
   const [customer, setCustomer] = useState([]);
-  const [reload, setReload] = useState(true);
+  const [reload, setReload] = useState(false);
   const [newCustomer, setNewCustomer] = useState({
     name: "",
     phone: "",
@@ -28,16 +29,23 @@ function Customer() {
   });
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredCustomers = customer.filter((cus) =>
-    cus.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
   useEffect(() => {
     getCustomers().then((data) => {
       setCustomer(data);
     });
-    setReload(false);
   }, [reload]);
+
+  const handleSearch = () => {
+    if (searchQuery) {
+      getCustomersByName(searchQuery).then((data) => {
+        setCustomer(data);
+      });
+    } else {
+      getCustomers().then((data) => {
+        setCustomer(data);
+      });
+    }
+  };
 
   const handleDelete = (id) => {
     deleteCustomer(id).then(() => {
@@ -108,6 +116,7 @@ function Customer() {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
+        <button onClick={handleSearch}>Ara</button>
       </div>
       <div className="customer-newcustomer">
         <h2>Yeni Müşteri Ekle :</h2>
@@ -201,18 +210,19 @@ function Customer() {
               <th>Güncelle</th>
             </tr>
           </thead>
+
           <tbody>
-            {filteredCustomers.map((customer) => (
-              <tr key={customer.id}>
-                <td>{customer.name}</td>
-                <td>{customer.phone}</td>
-                <td>{customer.mail}</td>
-                <td>{customer.address}</td>
-                <td>{customer.city}</td>
-                <td onClick={() => handleDelete(customer.id)}>
+            {customer.map((cus) => (
+              <tr key={cus.id}>
+                <td>{cus.name}</td>
+                <td>{cus.phone}</td>
+                <td>{cus.mail}</td>
+                <td>{cus.address}</td>
+                <td>{cus.city}</td>
+                <td onClick={() => handleDelete(cus.id)}>
                   <DeleteIcon />
                 </td>
-                <td onClick={() => handleUpdateBtn(customer)}>
+                <td onClick={() => handleUpdateBtn(cus)}>
                   <UpdateIcon />
                 </td>
               </tr>

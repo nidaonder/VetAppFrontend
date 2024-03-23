@@ -28,3 +28,10 @@ export const updateCustomerFunc = async (id, customer) => {
     );
     return data;
 };
+
+export const getCustomersByName = async (name) => {
+    const encodedName = encodeURIComponent(name);
+    const { data } = await axios.get(
+        `${import.meta.env.VITE_APP_BASE_URL}/api/v1/customers/name/${encodedName}`);
+    return data;
+};
