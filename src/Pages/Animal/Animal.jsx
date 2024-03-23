@@ -6,6 +6,8 @@ import {
   deleteAnimal,
   createAnimal,
   updateAnimalFunc,
+  getAnimalsByCustomer,
+  getAnimalsByName,
 } from "../../API/animal";
 import { getCustomers } from "../../API/customer";
 import "./Animal.css";
@@ -25,15 +27,35 @@ export default function Animal() {
   const [searchQueryAnimal, setSearchQueryAnimal] = useState("");
   const [searchQueryCustomer, setSearchQueryCustomer] = useState("");
 
-  const filteredAnimals = animal.filter(
-    (anim) =>
-      anim.name.toLowerCase().includes(searchQueryAnimal.toLowerCase()) &&
-      (anim.customer
-        ? anim.customer.name
-            .toLowerCase()
-            .includes(searchQueryCustomer.toLowerCase())
-        : !searchQueryCustomer)
-  );
+  const handleSearchByAnimalName = async () => {
+    if (searchQueryAnimal) {
+      const fetchedAnimals = await getAnimalsByName(searchQueryAnimal);
+      setAnimal(fetchedAnimals);
+    } else {
+      const fetchedAnimals = await getAnimals();
+      setAnimal(fetchedAnimals);
+    }
+  };
+
+  const handleSearchByCustomerId = async () => {
+    if (!searchQueryCustomer || searchQueryCustomer === "") {
+      try {
+        const fetchedAnimals = await getAnimals();
+        setAnimal(fetchedAnimals);
+      } catch (error) {
+        console.error("Animals fetching failed:", error);
+        setAnimal([]);
+      }
+    } else {
+      try {
+        const fetchedAnimals = await getAnimalsByCustomer(searchQueryCustomer);
+        setAnimal(fetchedAnimals);
+      } catch (error) {
+        console.error("Animals fetching for customer failed:", error);
+        setAnimal([]);
+      }
+    }
+  };
 
   const handleNewAnimal = (event) => {
     if (event.target.name === "customer") {
@@ -142,15 +164,23 @@ export default function Animal() {
           value={searchQueryAnimal}
           onChange={(e) => setSearchQueryAnimal(e.target.value)}
         />
+        <button onClick={handleSearchByAnimalName}>Ara</button>
       </div>
       <div className="input-customername">
         <h2>Müşteri ismine göre filtrele :</h2>
-        <input
-          type="text"
-          placeholder="Müşteri adıyla ara"
+
+        <select
           value={searchQueryCustomer}
           onChange={(e) => setSearchQueryCustomer(e.target.value)}
-        />
+        >
+          <option value="">Tümünü Göster</option>
+          {customers.map((customer) => (
+            <option key={customer.id} value={customer.id}>
+              {customer.name}
+            </option>
+          ))}
+        </select>
+        <button onClick={handleSearchByCustomerId}>Ara</button>
       </div>
       <div className="animal-newanimal">
         <h2>Yeni Pet Ekle :</h2>
@@ -300,8 +330,9 @@ export default function Animal() {
               <th>Güncelle</th>
             </tr>
           </thead>
+
           <tbody>
-            {filteredAnimals.map((animal) => (
+            {animal.map((animal) => (
               <tr key={animal.id}>
                 <td>{animal.name}</td>
                 <td>{animal.species}</td>

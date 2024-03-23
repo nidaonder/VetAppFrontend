@@ -28,3 +28,17 @@ export const updateAnimalFunc = async (id, animal) => {
     );
     return data;
 };
+
+export const getAnimalsByCustomer = async (customerId) => {
+    const { data } = await axios.get(
+        `${import.meta.env.VITE_APP_BASE_URL}/api/v1/animals/customer/${customerId}`
+    );
+    return data;
+};
+
+export const getAnimalsByName = async (name) => {
+    const { data } = await axios.get(
+        `${import.meta.env.VITE_APP_BASE_URL}/api/v1/animals/name/${name}`
+    );
+    return data;
+};
