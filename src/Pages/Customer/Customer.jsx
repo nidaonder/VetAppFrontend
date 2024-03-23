@@ -112,7 +112,7 @@ function Customer() {
         <h2>İsme göre filtrele :</h2>
         <input
           type="text"
-          placeholder="Müşteri ara"
+          placeholder="Tam Adını Yazınız"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
