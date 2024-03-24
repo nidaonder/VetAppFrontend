@@ -50,16 +50,8 @@ function Vaccine() {
     animal: vaccine.animal,
     report: vaccine.report,
   });
-  const [animalNameQuery, setAnimalNameQuery] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-
-  const filteredVaccines = vaccine.filter(
-    (vac) =>
-      vac.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
-      vac.animal.name.toLowerCase().includes(animalNameQuery.toLowerCase())
-  );
 
   useEffect(() => {
     getVaccines().then((data) => {
@@ -186,6 +178,14 @@ function Vaccine() {
     });
   };
 
+  const handleReset = async () => {
+    const fetchedVaccines = await getVaccines();
+    setVaccine(fetchedVaccines);
+    setSelectedAnimalId("");
+    setStartDate("");
+    setEndDate("");
+  };
+
   return (
     // Değerlendirme 14-15
     <>
@@ -205,13 +205,6 @@ function Vaccine() {
             ))}
           </select>
           <button onClick={handleSearchByAnimalId}>Ara</button>
-
-          {/* <input
-            type="text"
-            placeholder="Pet adı"
-            value={animalNameQuery}
-            onChange={(e) => setAnimalNameQuery(e.target.value)}
-          /> */}
         </div>
         <div className="date-search">
           <h2>Tarih Aralığına Göre Filtrele :</h2>
@@ -228,6 +221,7 @@ function Vaccine() {
           <button onClick={handleSearchByDateRange}>
             Tarih Aralığına Göre Ara
           </button>
+          <button onClick={handleReset}>Sıfırla</button>
         </div>
         <div className="vaccine-newvaccine">
           <h2>Yeni Aşı :</h2>
@@ -369,8 +363,9 @@ function Vaccine() {
                 <th>Güncelle</th>
               </tr>
             </thead>
+
             <tbody>
-              {filteredVaccines.map((vaccine) => (
+              {vaccine.map((vaccine) => (
                 <tr key={vaccine.id}>
                   <td>{vaccine.name}</td>
                   <td>{vaccine.code}</td>
