@@ -19,6 +19,18 @@
 
 .appointment-search {
     display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 10px;
+}
+.doctor-daterange {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.animal-daterange {
+    display: flex;
     align-items: center;
     gap: 10px;
 }

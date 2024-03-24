@@ -86,11 +86,9 @@ function Vaccine() {
         const fetchedVaccines = await getVaccinesByAnimal(selectedAnimalId);
         setVaccine(fetchedVaccines);
       } catch (error) {
-        // Eğer seçilen hayvana ait aşı bulunamazsa veya hata alınırsa boş liste göster
         setVaccine([]);
       }
     } else {
-      // Eğer bir hayvan seçimi yapılmadıysa veya "Tümünü Göster" seçeneği seçildiyse tüm aşıları tekrar yükle
       const fetchedVaccines = await getVaccines();
       setVaccine(fetchedVaccines);
     }

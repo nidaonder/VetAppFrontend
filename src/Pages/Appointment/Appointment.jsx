@@ -9,6 +9,8 @@ import {
   deleteAppointment,
   createAppointment,
   updateAppointmentFunc,
+  getAnimalAppointmentDateInRange,
+  getDoctorAppointmentDateInRange,
 } from "../../API/appointment";
 import "./Appointment.css";
 
@@ -19,27 +21,10 @@ function Appointment() {
   const [doctors, setDoctors] = useState([]);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [doctorFilter, setDoctorFilter] = useState("");
-  const [animalFilter, setAnimalFilter] = useState("");
+  const [selectedDoctorId, setSelectedDoctorId] = useState("");
+  const [selectedAnimalId, setSelectedAnimalId] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-
-  const filteredAppointments = appointment.filter((appt) => {
-    const apptDate = new Date(appt.appointmentDate).getTime();
-    const start = new Date(startDate).getTime();
-    const end = new Date(endDate).getTime();
-
-    const matchesDoctorName = appt.doctor.name
-      .toLowerCase()
-      .includes(doctorFilter.toLowerCase());
-    const matchesAnimalName = appt.animal.name
-      .toLowerCase()
-      .includes(animalFilter.toLowerCase());
-    const isInDateRange =
-      (!startDate || apptDate >= start) && (!endDate || apptDate <= end);
-
-    return matchesDoctorName && matchesAnimalName && isInDateRange;
-  });
 
   Modal.setAppElement("#root");
 
@@ -159,34 +144,108 @@ function Appointment() {
     setReload(false);
   }, [reload]);
 
+  const handleSearchByDoctorAndDateRange = async () => {
+    if (selectedDoctorId && startDate && endDate) {
+      try {
+        const appointments = await getDoctorAppointmentDateInRange(
+          selectedDoctorId,
+          startDate,
+          endDate
+        );
+        setAppointment(appointments);
+      } catch (error) {
+        console.error("Arama sırasında bir hata oluştu", error);
+      }
+    }
+  };
+
+  const handleSearchByAnimalAndDateRange = async () => {
+    if (selectedAnimalId && startDate && endDate) {
+      try {
+        const appointments = await getAnimalAppointmentDateInRange(
+          selectedAnimalId,
+          startDate,
+          endDate
+        );
+        setAppointment(appointments);
+      } catch (error) {
+        console.error("Arama sırasında bir hata oluştu", error);
+      }
+    }
+  };
+
+  const handleResetAppointments = async () => {
+    try {
+      const fetchedAppointments = await getAppointments();
+      setAppointment(fetchedAppointments);
+      setSelectedDoctorId("");
+      setSelectedAnimalId("");
+      setStartDate("");
+      setEndDate("");
+    } catch (error) {
+      console.error(
+        "Randevuları yeniden yükleme sırasında bir hata oluştu",
+        error
+      );
+    }
+  };
+
   return (
     // Değerlendirme 16-17
     <>
       <div className="appointment">
         <div className="appointment-search">
-          <h2>Arama Yap :</h2>
-          <input
-            type="text"
-            placeholder="Doktor adı ile filtrele"
-            value={doctorFilter}
-            onChange={(e) => setDoctorFilter(e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="Animal adı ile filtrele"
-            value={animalFilter}
-            onChange={(e) => setAnimalFilter(e.target.value)}
-          />
-          <input
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-          />
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-          />
+          <div className="doctor-daterange">
+            <h2>Doktora Göre Arama Yap :</h2>
+            <select
+              value={selectedDoctorId}
+              onChange={(e) => setSelectedDoctorId(e.target.value)}
+            >
+              <option value="">Doktor Seçiniz</option>
+              {doctors.map((doctor) => (
+                <option key={doctor.id} value={doctor.id}>
+                  {doctor.name}
+                </option>
+              ))}
+            </select>
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+            />
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+            />
+            <button onClick={handleSearchByDoctorAndDateRange}>Ara</button>
+          </div>
+          <div className="animal-daterange">
+            <h2>Pet'e Göre Arama Yap :</h2>
+            <select
+              value={selectedAnimalId}
+              onChange={(e) => setSelectedAnimalId(e.target.value)}
+            >
+              <option value="">Pet Seçiniz</option>
+              {animals.map((animal) => (
+                <option key={animal.id} value={animal.id}>
+                  {animal.name}
+                </option>
+              ))}
+            </select>
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+            />
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+            />
+            <button onClick={handleSearchByAnimalAndDateRange}>Ara</button>
+            <button onClick={handleResetAppointments}>Arama Verilerini Sıfırla</button>
+          </div>
         </div>
         <div className="appointment-newappointment">
           <h2>Yeni Randevu Ekle :</h2>
@@ -225,7 +284,7 @@ function Appointment() {
               </option>
             ))}
           </select>
-          <button onClick={handleCreate}>Create</button>
+          <button onClick={handleCreate}>Ekle</button>
         </div>
         <div className="appointment-updateappointment">
           <h2>Randevu Güncelle :</h2>
@@ -264,8 +323,9 @@ function Appointment() {
               </option>
             ))}
           </select>
-          <button onClick={handleUpdate}>Update</button>
+          <button onClick={handleUpdate}>Güncelle</button>
         </div>
+
         <div className="appointment-list">
           <h2>Randevu Listesi</h2>
           <table>
@@ -279,7 +339,7 @@ function Appointment() {
               </tr>
             </thead>
             <tbody>
-              {filteredAppointments.map((appointment) => (
+              {appointment.map((appointment) => (
                 <tr key={appointment.id}>
                   <td>{appointment.appointmentDate}</td>
                   <td>{appointment.animal.name}</td>

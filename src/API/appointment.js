@@ -28,3 +28,27 @@ export const updateAppointmentFunc = async (id, appointment) => {
     );
     return data;
 };
+
+export const getAnimalAppointmentDateInRange = async (animalId, startDate, endDate) => {
+    const { data } = await axios.get(
+        `${import.meta.env.VITE_APP_BASE_URL}/api/v1/appointments/animal/date-range`, {
+        params: {
+            animalId,
+            startDate,
+            endDate
+        }
+    });
+    return data;
+};
+
+export const getDoctorAppointmentDateInRange = async (doctorId, startDate, endDate) => {
+    const { data } = await axios.get(
+        `${import.meta.env.VITE_APP_BASE_URL}/api/v1/appointments/doctor/date-range`, {
+        params: {
+            doctorId,
+            startDate,
+            endDate
+        }
+    });
+    return data;
+};
