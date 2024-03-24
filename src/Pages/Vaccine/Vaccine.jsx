@@ -7,6 +7,7 @@ import {
   createVaccine,
   updateVaccineFunc,
   getVaccinesInDateRange,
+  getVaccinesByAnimal,
 } from "../../API/vaccine";
 import { getAnimals } from "../../API/animal";
 import { getReports } from "../../API/report";
@@ -32,6 +33,7 @@ function Vaccine() {
   const [reports, setReports] = useState([]);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [selectedAnimalId, setSelectedAnimalId] = useState("");
   const [newVaccine, setNewVaccine] = useState({
     name: "",
     code: "",
@@ -76,6 +78,22 @@ function Vaccine() {
     deleteVaccine(id).then(() => {
       setReload(true);
     });
+  };
+
+  const handleSearchByAnimalId = async () => {
+    if (selectedAnimalId) {
+      try {
+        const fetchedVaccines = await getVaccinesByAnimal(selectedAnimalId);
+        setVaccine(fetchedVaccines);
+      } catch (error) {
+        // Eğer seçilen hayvana ait aşı bulunamazsa veya hata alınırsa boş liste göster
+        setVaccine([]);
+      }
+    } else {
+      // Eğer bir hayvan seçimi yapılmadıysa veya "Tümünü Göster" seçeneği seçildiyse tüm aşıları tekrar yükle
+      const fetchedVaccines = await getVaccines();
+      setVaccine(fetchedVaccines);
+    }
   };
 
   const handleNewVaccine = (event) => {
@@ -175,13 +193,27 @@ function Vaccine() {
     <>
       <div className="vaccine">
         <div className="animalname-search">
-          <h2>Pet Adına Göre Filtrele :</h2>
-          <input
+          <h2>Pet Seçiniz :</h2>
+
+          <select
+            value={selectedAnimalId}
+            onChange={(e) => setSelectedAnimalId(e.target.value)}
+          >
+            <option value="">Tümünü Göster</option>
+            {animals.map((animal) => (
+              <option key={animal.id} value={animal.id}>
+                {animal.name}
+              </option>
+            ))}
+          </select>
+          <button onClick={handleSearchByAnimalId}>Ara</button>
+
+          {/* <input
             type="text"
             placeholder="Pet adı"
             value={animalNameQuery}
             onChange={(e) => setAnimalNameQuery(e.target.value)}
-          />
+          /> */}
         </div>
         <div className="date-search">
           <h2>Tarih Aralığına Göre Filtrele :</h2>

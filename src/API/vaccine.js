@@ -40,3 +40,10 @@ export const getVaccinesInDateRange = async (startDate, endDate) => {
     );
     return data;
 };
+
+export const getVaccinesByAnimal = async (animalId) => {
+    const { data } = await axios.get(
+        `${import.meta.env.VITE_APP_BASE_URL}/api/v1/vaccines/animal/${animalId}`
+    );
+    return data;
+};
